@@ -1,0 +1,118 @@
+前期规划
+1.参数规划
+    把参数划分为必选参数，可选参数和公共参数
+        必选参数必填 name type
+        可选参数选填 九宫格参数 图片参数 文本参数
+        公共参数可以作用于每个类型 static hide hideChildren deferred
+            公共参数保证命名与可选参数不同，当没有可选参数的时候可以迅速判断是公共参数
+    最终写法Type_Name_Optional_Common
+2.考虑输出格式
+    统一用Json格式，考虑到图片的Xml其实也是逐行读取，全部用Json即可
+3.js继承的使用
+    利用prototype
+4.不做的事
+    不考虑多语言
+5.优化点
+    3.1 deferred可以只生成一个节点
+    3.2 生成初步代码文本
+
+
+
+1.版本计划
+    1.1、读取树形数据 名称 结构化 Done
+    1.2、写入树形结构 Done
+    1.3、坐标 宽高 Done
+    1.4、图片导出 Done
+    1.5、socket通讯Done
+    1.6、Json格式输出
+    1.7、生成图集
+    1.8、生成prefab
+2、第二个版本
+    2.1、新增各种格式
+
+
+
+
+
+
+//根节点
+Root
+Core:
+    StateChangable
+    Image
+    Text
+Container
+Button
+Toggle
+ToggleGroup
+ScrollView
+ScrollPage
+List
+
+
+Image Text
+    normal
+    over
+    down
+    disable
+
+Button
+    image
+    label
+
+Toggle
+    image
+    label
+
+ToggleGroup
+    Toggle
+
+ScrollView
+    mask
+        content
+
+ScrollPage
+    mask
+        content
+
+List
+    item
+
+//文字颜色
+//层次
+
+
+问题
+1.ToggleGroup如何验证
+    只验证子节点，不验证自身节点的表达式
+2.图片链接
+    生成的Json链接只有两种，公共的或者本身psd的，批处理的没有在这里处理
+3.如何计算相对坐标
+    //ToAsk
+    为什么不利用原生的接口，是因为有些notExport吗？
+4.错误定位
+    主要的错误来源于命名格式错误，错误定位最重要的是帮助开发者快速定位到路径,所以在不少函数都传入了路径这个参数
+5.空Container还需要处理
+    空Container可以在SetParent中用到，确定层次，不可忽略
+6.如何导出图片
+    新建一个工作台，复制图片，裁剪，保存，其中需要过滤掉一些信息，只保留最原始的图片，额外的信息需要在unity上面加上
+7.var styleRangeList = textStyele.getList(ST("textStyleRange"));
+styleRangeList数量怎么算的？
+8Json判断不了是否是数字吗？
+    可能部分数字需要字符串来表示
+    No,没想到
+9.为什么不用浮点数，坐标+2 -1是怎么回事
+    接口拿到的是整数， 坐标变换只针对文本
+10. calculateContainerBounds adjustContainerBounds//为什么不用原生函数
+计算相对坐标
+11.为什么用xml和json两种格式
+xml根本没有读取，只不过一行行读取文本
+    历史遗留问题
+12.ScaleImage为什么不要
+    可以从参数知道是否是9切片
+13.Static为什么不要
+    要，坐在公共参数里面
+14.为什么需要visible属性
+    先提取，再决定是否需要处理
+15.不清楚的函数是不是用listener
+是，有针对Mac的listener
