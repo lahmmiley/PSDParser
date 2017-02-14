@@ -28,8 +28,8 @@ function BaseNode()
     this.layerIndex = -1;
     this.x = 0;
     this.y = 0;
-    this.width = -1;
-    this.height = -1;
+    this.width = 0;
+    this.height = 0;
     this.parseParam();
 
     this.toString = function()
@@ -110,4 +110,40 @@ BaseNode.prototype.getName = function(tokenList)
     }
     return tokenList[0];
     */
+}
+
+BaseNode.prototype.getPrefix = function(depth)
+{
+	var prefix = "";
+	for(var i = 0; i < depth * 2;i++)
+	{
+		prefix += TAB;
+	}
+	return prefix;
+}
+
+BaseNode.prototype.toJson = function(depth, isFinalChild)
+{
+	var prefix = this.getPrefix(depth);
+	var jsonStr = prefix + "{\n";
+	jsonStr += prefix + "\"Name\":\"" + this.name + "\", \"Type\":\"" + this.type + 
+						"\", \"X\":" + this.x + ", \"Y\":" + this.y +
+						", \"Width\":" + this.width + ", \"Height\":" + this.height;
+	if(this.children.length > 0) jsonStr += ",";
+	jsonStr += "\n";
+	if(this.children.length > 0)
+	{
+		jsonStr += prefix + TAB + "\"Children\":\n";
+		jsonStr += prefix + TAB + "[\n";
+		var length = this.children.length;
+		for(var i = 0; i < length; i++)
+		{
+			jsonStr += this.children[i].toJson(depth + 1, (i == (length - 1)));
+		}
+		jsonStr += prefix + TAB + "]\n";
+	}
+	jsonStr += prefix + "}";
+	if(!isFinalChild) jsonStr += ",";
+	jsonStr += "\n";
+	return jsonStr;
 }

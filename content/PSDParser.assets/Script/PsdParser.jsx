@@ -1,5 +1,5 @@
 #include "lib/Node/BaseNode.jsx";
-#include "lib/Node/FolderNode.jsx";
+#include "lib/Node/ContainerNode.jsx";
 #include "lib/Node/ImageNode.jsx";
 #include "lib/Node/TextNode.jsx";
 #include "lib/Environment.jsx";
@@ -33,7 +33,7 @@ function main()
 	var env = new Environment(app.activeDocument);
 	var root = new Extractor().extract();
 	new JsonWriter(env).write(root);
-	new ImageExporter(env).export(root);
+	//new ImageExporter(env).export(root);
 }
 
 main();

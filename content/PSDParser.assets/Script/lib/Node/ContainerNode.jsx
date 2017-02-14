@@ -1,10 +1,10 @@
-function FolderNode()
+function ContainerNode()
 {
     BaseNode.apply(this, arguments);
 }
-defineSubClass(BaseNode, FolderNode);
+defineSubClass(BaseNode, ContainerNode);
 
-FolderNode.prototype.calculateBounds = function()
+ContainerNode.prototype.calculateBounds = function()
 {
     var left = Number.MAX_VALUE;
     var top = Number.MAX_VALUE;

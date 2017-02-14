@@ -10,7 +10,7 @@ function Extractor() {}
 Extractor.prototype.extract = function()
 {
     var layerCount = this.getLayerCount();
-    var root = new FolderNode("Container", null);
+    var root = new ContainerNode("Container", null);
     var currentNode = root;
     for(var i = layerCount; i >= 1; i--)
     {
@@ -29,13 +29,13 @@ Extractor.prototype.extract = function()
                 break;
         }
     }
-
+	root.calculateBounds();
     return root;
 }
 
 Extractor.prototype.dealLayerSectionStart = function(descriptor, currentNode)
 {
-    var node = new FolderNode("Container", descriptor);
+    var node = new ContainerNode("Container", descriptor);
     node.parent = currentNode;
     currentNode.children.push(node);
     return node;
