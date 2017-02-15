@@ -1,5 +1,5 @@
 #include "lib/Node/BaseNode.jsx";
-#include "lib/Node/ContainerNode.jsx";
+#include "lib/Node/FolderNode.jsx";
 #include "lib/Node/ImageNode.jsx";
 #include "lib/Node/TextNode.jsx";
 #include "lib/Environment.jsx";

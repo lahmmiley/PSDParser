@@ -1,9 +1,12 @@
-const typeMap = 
+const TypeMap = 
 {
-    "button":1,
     "image":1,
     "text":1,
     "container":1,
+    "button":1,
+	"toggle":1,
+	"togglegroup":1,
+	"scrollview":1,
 }
 
 function inherit(p)
@@ -21,8 +24,8 @@ function defineSubClass(superClass, constructor)
 
 function BaseNode()
 {
-    this.type = arguments[0];
-    this.descriptor = arguments[1];
+    //this.type = arguments[0];
+    this.descriptor = arguments[0];
     this.parent = null;
     this.children = [];
     this.layerIndex = -1;
@@ -30,7 +33,9 @@ function BaseNode()
     this.y = 0;
     this.width = 0;
     this.height = 0;
-    this.parseParam();
+
+	//½âÎö²ÎÊý
+	this.parseParam();
 
     this.toString = function()
     {
@@ -87,11 +92,7 @@ BaseNode.prototype.calculateBounds = function()
 
 BaseNode.prototype.getType = function(tokenList)
 {
-    if(this.type == "image" || this.type == "text")
-    {
-        return this.type;
-    }
-    var hasType = typeMap.hasOwnProperty(tokenList[0].toLowerCase());
+    var hasType = TypeMap.hasOwnProperty(tokenList[0].toLowerCase());
     if(hasType)
     {
         return tokenList[0];
@@ -101,21 +102,18 @@ BaseNode.prototype.getType = function(tokenList)
 
 BaseNode.prototype.getName = function(tokenList)
 {
-    //TODO
-    return tokenList[tokenList.length - 1];
-    /*
-    if(hasType)
+    var hasType = TypeMap.hasOwnProperty(tokenList[0].toLowerCase());
+    if(hasType && tokenList.length > 1)
     {
         return tokenList[1];
     }
     return tokenList[0];
-    */
 }
 
 BaseNode.prototype.getPrefix = function(depth)
 {
 	var prefix = "";
-	for(var i = 0; i < depth * 2;i++)
+	for(var i = 0; i < depth * 3; i++)
 	{
 		prefix += TAB;
 	}
@@ -126,21 +124,21 @@ BaseNode.prototype.toJson = function(depth, isFinalChild)
 {
 	var prefix = this.getPrefix(depth);
 	var jsonStr = prefix + "{\n";
-	jsonStr += prefix + "\"Name\":\"" + this.name + "\", \"Type\":\"" + this.type + 
+	jsonStr += prefix + TAB + "\"Name\":\"" + this.name + "\", \"Type\":\"" + this.type + 
 						"\", \"X\":" + this.x + ", \"Y\":" + this.y +
 						", \"Width\":" + this.width + ", \"Height\":" + this.height;
 	if(this.children.length > 0) jsonStr += ",";
 	jsonStr += "\n";
 	if(this.children.length > 0)
 	{
-		jsonStr += prefix + TAB + "\"Children\":\n";
-		jsonStr += prefix + TAB + "[\n";
+		jsonStr += prefix + TAB + TAB + "\"Children\":\n";
+		jsonStr += prefix + TAB + TAB + "[\n";
 		var length = this.children.length;
 		for(var i = 0; i < length; i++)
 		{
 			jsonStr += this.children[i].toJson(depth + 1, (i == (length - 1)));
 		}
-		jsonStr += prefix + TAB + "]\n";
+		jsonStr += prefix + TAB + TAB + "]\n";
 	}
 	jsonStr += prefix + "}";
 	if(!isFinalChild) jsonStr += ",";

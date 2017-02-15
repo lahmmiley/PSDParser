@@ -14,5 +14,9 @@ function Environment(doc)
 Environment.prototype.getPsdName = function(rawName)
 {
     var rawNameSplit = rawName.split("$");
-	return rawNameSplit[1];
+	if(rawNameSplit.length == 2)
+    {
+        return rawNameSplit[1];
+    }
+	return rawName;
 }
