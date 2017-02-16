@@ -3,7 +3,8 @@ const WORKBENCH = "workbench";
 function ImageExporter(env)
 {
 	this.env = env;
-    var folder = new Folder(this.env.imageFolderPath);
+	this.imageExportPath = this.env.imageFolderPath + this.env.name + "/";
+    var folder = new Folder(this.imageExportPath);
     if(folder.exists == true)
     {
         var files = folder.getFiles();
@@ -12,6 +13,10 @@ function ImageExporter(env)
            files[i].remove();
         }
     }
+	else
+	{
+        folder.create();
+	}
 
     this.exportOptions = new ExportOptionsSaveForWeb();
     this.exportOptions.format = SaveDocumentType.PNG;
@@ -63,7 +68,7 @@ ImageExporter.prototype.exportImageLayer = function(data)
     if(this.assetMap[name] == null)
     {
         this.assetMap[name] = 1;
-        var imagePath = this.env.imageFolderPath + name + ".png";
+        var imagePath = this.imageExportPath + name + ".png";
         this.exportImageInWorkbench(data, imagePath);
     }
 }

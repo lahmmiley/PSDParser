@@ -33,7 +33,7 @@ function main()
 	var env = new Environment(app.activeDocument);
 	var root = new Extractor().extract();
 	new JsonWriter(env).write(root);
-	//new ImageExporter(env).export(root);
+	new ImageExporter(env).export(root);
 }
 
 main();

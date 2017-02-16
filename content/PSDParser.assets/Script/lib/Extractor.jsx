@@ -7,25 +7,28 @@ const TAB = "    "
 
 const NOT_EXPORT = "notexport";
 
-function Extractor() 
-{
-	this.sectionStartCount = 0;
-	this.notExporting = false;
-}
+function Extractor() {}
 
 Extractor.prototype.extract = function()
 {
     var layerCount = this.getLayerCount();
     var root = new FolderNode(null);
     var currentNode = root;
-    for(var i = layerCount; i != 1; i--)
+    for(var i = layerCount; i > 0; i--)
     {
         var descriptor = this.getLayerActionDescriptor(i);
         var layerSection = this.getLayerSection(descriptor);
-		if(this.notExport(descriptor, layerSection))
+		if(this.notExport(descriptor, layerSection) || 
+			!this.isFolderVisible(descriptor, layerSection))
+		{
+			i = this.findSectionEndIndex(i);
+			continue;
+		}
+		if(!this.isContentVisible(descriptor, layerSection))
 		{
 			continue;
 		}
+
         switch(layerSection)
         {
             case "layerSectionStart":
@@ -41,32 +44,6 @@ Extractor.prototype.extract = function()
     }
 	root.calculateBounds();
     return root;
-}
-
-Extractor.prototype.notExport = function(descriptor, layerSection)
-{
-    var layerName = descriptor.getString(ST("name"));
-	if(layerName.toLowerCase() == NOT_EXPORT)
-	{
-		this.notExporting = true;
-	}
-	if(this.notExporting)
-	{
-		if(layerSection == "layerSectionStart")
-		{
-			this.sectionStartCount += 1;
-		}
-		else if(layerSection == "layerSectionEnd")
-		{
-			this.sectionStartCount -= 1;
-		}
-		if(this.sectionStartCount == 0)
-		{
-			this.notExporting = false;
-			return true;
-		}
-	}
-	return this.notExporting;
 }
 
 Extractor.prototype.dealLayerSectionStart = function(descriptor, currentNode)
@@ -123,4 +100,56 @@ Extractor.prototype.getLayerSection = function(descriptor)
 Extractor.prototype.isTextLayer = function(descriptor)
 {
     return descriptor.hasKey(ST("textKey"));
+}
+
+Extractor.prototype.findSectionEndIndex = function(i)
+{
+	var index = i - 1;
+	var sectionStartCount = 1;
+	for(; index > 0; index--)
+	{
+		var descriptor = this.getLayerActionDescriptor(index);
+		var layerSection = this.getLayerSection(descriptor);
+		if(layerSection == "layerSectionStart")
+		{
+			sectionStartCount += 1;
+		}
+		else if(layerSection == "layerSectionEnd")
+		{
+			sectionStartCount -= 1;
+		}
+		if(sectionStartCount == 0)
+		{
+			break;
+		}
+	}
+	return index;
+}
+
+Extractor.prototype.isFolderVisible = function(descriptor, layerSection)
+{
+	if(layerSection == "layerSectionStart")
+	{
+		return descriptor.getBoolean(ST("visible"));
+	}
+	return true;
+}
+
+Extractor.prototype.isContentVisible = function(descriptor, layerSection)
+{
+	if(layerSection == "layerSectionContent")
+	{
+		return descriptor.getBoolean(ST("visible"));
+	}
+	return true;
+}
+
+Extractor.prototype.notExport = function(descriptor, layerSection)
+{
+	if(layerSection == "layerSectionStart")
+	{
+		var layerName = descriptor.getString(ST("name"));
+		return layerName.toLowerCase() == NOT_EXPORT;
+	}
+	return false;
 }
