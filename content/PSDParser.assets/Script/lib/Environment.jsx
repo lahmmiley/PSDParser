@@ -1,6 +1,8 @@
 function Environment(doc)
 {
 	this.doc = doc;
+	this.width = doc.width;
+	this.height = doc.height;
 	this.name = this.getPsdName(doc.name).replace(/\.(psd|png)/i, "");
 	this.resourcesFolderPath = String(doc.path).slice(0, -3);
 	this.imageFolderPath = this.resourcesFolderPath + "Image/";

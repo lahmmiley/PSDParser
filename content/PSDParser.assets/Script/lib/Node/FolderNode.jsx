@@ -6,6 +6,14 @@ defineSubClass(BaseNode, FolderNode);
 
 FolderNode.prototype.calculateBounds = function()
 {
+	if(this.children.length == 0)
+	{
+		this.x = 0;
+		this.y = 0;
+		this.width = 0;
+		this.height = 0;
+		return;
+	}
     var left = Number.MAX_VALUE;
     var top = Number.MAX_VALUE;
     var right = Number.MIN_VALUE;

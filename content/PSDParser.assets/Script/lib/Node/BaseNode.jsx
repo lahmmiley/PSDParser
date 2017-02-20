@@ -7,6 +7,7 @@ const TypeMap =
 	"toggle":1,
 	"togglegroup":1,
 	"scrollview":1,
+	"list":1,
 }
 
 function inherit(p)

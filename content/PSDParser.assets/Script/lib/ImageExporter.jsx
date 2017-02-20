@@ -39,7 +39,7 @@ ImageExporter.prototype.export = function(root)
 
 ImageExporter.prototype.createWorkbench = function()
 {
-    this.workbench = app.documents.add(1280, 720, 72, WORKBENCH, NewDocumentMode.RGB, DocumentFill.TRANSPARENT);
+    this.workbench = app.documents.add(this.env.width, this.env.height, 72, WORKBENCH, NewDocumentMode.RGB, DocumentFill.TRANSPARENT);
 }
 
 ImageExporter.prototype.exportAllLayers = function(data)
@@ -81,7 +81,7 @@ ImageExporter.prototype.exportImageInWorkbench = function(data, imagePath)
     this.workbench.trim(TrimType.TRANSPARENT);
 	this.workbench.exportDocument(new File(imagePath), ExportType.SAVEFORWEB, this.exportOptions);
 	this.deleteWorkbenchLayer();
-	this.workbench.resizeCanvas(1280, 720);
+	this.workbench.resizeCanvas(this.env.width, this.env.height);
     app.activeDocument = this.currentActiveDocument;
 }
 
@@ -96,6 +96,27 @@ ImageExporter.prototype.selectLayer = function(data)
 
 ImageExporter.prototype.duplicateLayerToWorkbench = function(data)
 {
+	//var idDplc = charIDToTypeID( "Dplc" );
+    //var desc37 = new ActionDescriptor();
+    //var idnull = charIDToTypeID( "null" );
+    //    var ref31 = new ActionReference();
+    //    var idLyr = charIDToTypeID( "Lyr " );
+    //    var idOrdn = charIDToTypeID( "Ordn" );
+    //    var idTrgt = charIDToTypeID( "Trgt" );
+    //    ref31.putEnumerated( idLyr, idOrdn, idTrgt );
+    //desc37.putReference( idnull, ref31 );
+    //var idT = charIDToTypeID( "T   " );
+    //    var ref32 = new ActionReference();
+    //    var idDcmn = charIDToTypeID( "Dcmn" );
+    //    ref32.putName( idDcmn, WORKBENCH );
+    //desc37.putReference( idT, ref32 );
+    //var idNm = charIDToTypeID( "Nm  " );
+    //desc37.putString( idNm, """" + data.name + """" );
+    //var idVrsn = charIDToTypeID( "Vrsn" );
+    //desc37.putInteger( idVrsn, 5 );
+	//executeAction( idDplc, desc37, DialogModes.NO );
+
+
     var desc = new ActionDescriptor();
     var layerRef = new ActionReference();
     layerRef.putEnumerated(ST("layer"), ST("ordinal"), ST("targetEnum"));
