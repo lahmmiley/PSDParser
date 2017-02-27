@@ -6,5 +6,5 @@ defineSubClass(BaseNode, ImageNode);
 
 ImageNode.prototype.getType = function()
 {
-	return "image";
+	return TYPE_IMAGE;
 }

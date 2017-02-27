@@ -28,6 +28,7 @@ Extractor.prototype.extract = function()
 		{
 			continue;
 		}
+		
 
         switch(layerSection)
         {
@@ -59,6 +60,7 @@ Extractor.prototype.dealLayerSectionContent = function(descriptor, currentNode, 
     if(this.isTextLayer(descriptor))
     {
         node = new TextNode(descriptor);
+		node.setFragments(descriptor);
     }
     else
     {

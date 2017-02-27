@@ -1,13 +1,22 @@
+const TYPE_IMAGE = "image";
+const TYPE_TEXT = "text";
+const TYPE_CONTAINER = "container";
+const TYPE_BUTTON = "button";
+const TYPE_TOGGLE = "toggle";
+const TYPE_TOGGLEGROUP = "togglegroup";
+const TYPE_SCROLLVIEW = "scrollview";
+const TYPE_LIST = "list";
+
 const TypeMap = 
 {
-    "image":1,
-    "text":1,
-    "container":1,
-    "button":1,
-	"toggle":1,
-	"togglegroup":1,
-	"scrollview":1,
-	"list":1,
+    TYPE_IMAGE:1,
+    TYPE_TEXT:1,
+    TYPE_CONTAINER:1,
+    TYPE_BUTTON:1,
+	TYPE_TOGGLE:1,
+	TYPE_TOGGLEGROUP:1,
+	TYPE_SCROLLVIEW:1,
+	TYPE_LIST:1,
 }
 
 function inherit(p)
@@ -23,9 +32,13 @@ function defineSubClass(superClass, constructor)
     constructor.prototype.constructor = constructor;
 }
 
+String.prototype.repeat = function(n)
+{
+	return new Array(n + 1).join(this);
+}
+
 function BaseNode()
 {
-    //this.type = arguments[0];
     this.descriptor = arguments[0];
     this.parent = null;
     this.children = [];
@@ -36,7 +49,7 @@ function BaseNode()
     this.height = 0;
 
 	//解析参数
-	this.parseParam();
+	this.parseLayerName();
 
     this.toString = function()
     {
@@ -46,33 +59,33 @@ function BaseNode()
 }
 
 //不放在类内部是因为类初始化就会用到这个函数，需要把函数定义在调用之前
-BaseNode.prototype.getLayerName = function()
+BaseNode.prototype.parseLayerName = function()
 {
     if(this.descriptor == null)
     {
-        return "root";
-    }
-    return this.descriptor.getString(ST("name"));
-}
-
-BaseNode.prototype.parseParam = function()
-{
-    if(this.descriptor == null)
-    {
-        this.type = "container";
         this.name = "root";
+        this.type = TYPE_CONTAINER;
     }
     else
     {
-        var layerName = this.descriptor.getString(ST("name"));
-        for(var i = 0;i < DUMMY_TOKEN_LIST.length;i++)
-        {
-            layerName = layerName.replace(DUMMY_TOKEN_LIST[i], "");
-        }
-        var tokenList = layerName.split("_");
-        this.type = this.getType(tokenList);
-        this.name = this.getName(tokenList);
+		var layerName = this.descriptor.getString(ST("name"));
+		for(var i = 0;i < DUMMY_TOKEN_LIST.length;i++)
+		{
+			layerName = layerName.replace(DUMMY_TOKEN_LIST[i], "");
+		}
+		this.setParam(layerName);
     }
+}
+
+BaseNode.prototype.setParam = function(layerName)
+{
+	var tokenList = layerName.split("_");
+	this.type = this.getType();
+	this.name = tokenList[0];
+	if(tokenList.length == 2)
+	{
+		this.param = tokenList[1];
+	}
 }
 
 //文本图层返回的是实际像素的区域，比文本框范围略小
@@ -91,26 +104,6 @@ BaseNode.prototype.calculateBounds = function()
     this.height = bottom - top;
 }
 
-BaseNode.prototype.getType = function(tokenList)
-{
-    var hasType = TypeMap.hasOwnProperty(tokenList[0].toLowerCase());
-    if(hasType)
-    {
-        return tokenList[0];
-    }
-    return "container";
-}
-
-BaseNode.prototype.getName = function(tokenList)
-{
-    var hasType = TypeMap.hasOwnProperty(tokenList[0].toLowerCase());
-    if(hasType && tokenList.length > 1)
-    {
-        return tokenList[1];
-    }
-    return tokenList[0];
-}
-
 BaseNode.prototype.getPrefix = function(depth)
 {
 	var prefix = "";
@@ -121,6 +114,7 @@ BaseNode.prototype.getPrefix = function(depth)
 	return prefix;
 }
 
+//TODO isFinalChild
 BaseNode.prototype.toJson = function(depth, isFinalChild)
 {
 	var prefix = this.getPrefix(depth);

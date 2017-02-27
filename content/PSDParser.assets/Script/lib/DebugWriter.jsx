@@ -1,8 +1,8 @@
-function DebugWritor()
+function DebugWriter()
 {
 }
 
-DebugWritor.prototype.write = function(root)
+DebugWriter.prototype.write = function(root)
 {
 	this.content = "";
     var path = app.activeDocument.path + "/" + "debugInfo.txt";
@@ -16,7 +16,7 @@ DebugWritor.prototype.write = function(root)
     }
 }
 
-DebugWritor.prototype.getContent = function(parent, indent)
+DebugWriter.prototype.getContent = function(parent, indent)
 {
     indent += "\t";
     for(var i = 0;i < parent.children.length;i++)

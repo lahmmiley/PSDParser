@@ -7,6 +7,7 @@ function Environment(doc)
 	this.resourcesFolderPath = String(doc.path).slice(0, -3);
 	this.imageFolderPath = this.resourcesFolderPath + "Image/";
     this.dataFolderPath = this.resourcesFolderPath + "Data/";
+	new PropertyGetter(this);
 
 	//设置新建裁剪面板的单位——像素
 	app.preferences.rulerUnits = Units.PIXELS;

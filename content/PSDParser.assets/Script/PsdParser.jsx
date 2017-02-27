@@ -4,10 +4,11 @@
 #include "lib/Node/TextNode.jsx";
 #include "lib/Environment.jsx";
 #include "lib/Extractor.jsx";
-#include "lib/DebugWritor.jsx";
-#include "lib/JsonWriter.jsx";
+#include "lib/DebugWriter.jsx";
+#include "lib/FileWriter.jsx";
 #include "lib/ImageExporter.jsx";
 #include "lib/MessageSender.jsx";
+#include "lib/PropertyGetter.jsx";
 
 function inherit(p)
 {
@@ -32,8 +33,9 @@ function main()
 
 	var env = new Environment(app.activeDocument);
 	var root = new Extractor().extract();
-	new JsonWriter(env).write(root);
-	new ImageExporter(env).export(root);
+	var path = env.dataFolderPath + env.name + ".json";
+	//new FileWriter(env).write(path, root.toJson(0, true));
+	//new ImageExporter(env).export(root);
 }
 
 main();
