@@ -34,7 +34,7 @@ function main()
 	var env = new Environment(app.activeDocument);
 	var root = new Extractor().extract();
 	var path = env.dataFolderPath + env.name + ".json";
-	//new FileWriter(env).write(path, root.toJson(0, true));
+	new FileWriter(env).write(path, root.toJson(0, true));
 	//new ImageExporter(env).export(root);
 }
 

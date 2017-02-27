@@ -1,4 +1,5 @@
-﻿function PropertyGetter(env)
+﻿//用法 new PropertyGetter().writeAllProperty(descriptor);
+function PropertyGetter(env)
 {
 	if(PropertyGetter.unique != undefined)
 	{
@@ -10,17 +11,18 @@
 
 PropertyGetter.prototype.writeAllProperty = function(descriptor)
 {
-	alert("writeAllProperty");
 	var object = this.actionDescriptorToObject(descriptor, true);
 	var path = this.env.dataFolderPath + "property.txt";
 	var content = this.getProperty(object, descriptor, false, 0);
 	new FileWriter().write(path, content);
 }
 
+//TODO
+//这部分代码写得不好，干嘛不直接在actionDescriptorToObject里面解析
 PropertyGetter.prototype.getProperty = function(object, descriptor, isArray, depth)
 {
-	var result = "";
-	var prefix = (' ').repeat(depth * 4);
+	var result = String.empty;
+	var prefix = (TAB).repeat(depth);
 	for(var name in object)
 	{
 		if(name == "_objectType")

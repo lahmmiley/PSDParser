@@ -9,13 +9,28 @@ TextNode.prototype.getType = function()
 	return TYPE_TEXT;
 }
 
+TextNode.prototype.addSpecifiedProperty = function(content)
+{
+	if(this.param != null)
+	{
+		content += this.getJsonFormatProperty("Param:", this.param, false);
+	}
+	content += this.getJsonFormatProperty("Size:", this.fragments[0].size, true);
+	var text = String.empty;
+    for(var i = 0; i < this.fragments.length; i++)
+	{
+		var fragment = this.fragments[i];
+		text += "<color=#" + fragment.color + ">" + fragment.text + "</color>";
+	}
+	content += this.getJsonFormatProperty("Text:", text, false);
+	return content;
+}
+
 TextNode.prototype.setFragments = function(descriptor)
 {
-	new PropertyGetter().writeAllProperty(descriptor);
 	this.fragments = [];
     var textStyle = descriptor.getObjectValue(ST("textKey"));
     var content = textStyle.getString(ST("textKey"));
-	//alert(textStyle.justification)
     var styleRangeList = textStyle.getList(ST("textStyleRange"));
 	//如果要缩放需求，则考虑缩放系数transform
     for(var i = 0; i < styleRangeList.count; i++)

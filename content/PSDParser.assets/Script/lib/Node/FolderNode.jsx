@@ -46,7 +46,7 @@ FolderNode.prototype.setParam = function(layerName)
 	else
 	{
 		this.type = TYPE_CONTAINER;
-		this.name = tokenList[1];
+		this.name = tokenList[0];
 	}
 	if(tokenList.length == (paramIndex + 1))
 	{

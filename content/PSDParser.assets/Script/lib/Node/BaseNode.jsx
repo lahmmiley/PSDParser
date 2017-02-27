@@ -32,6 +32,7 @@ function defineSubClass(superClass, constructor)
     constructor.prototype.constructor = constructor;
 }
 
+String.empty = "";
 String.prototype.repeat = function(n)
 {
 	return new Array(n + 1).join(this);
@@ -104,25 +105,14 @@ BaseNode.prototype.calculateBounds = function()
     this.height = bottom - top;
 }
 
-BaseNode.prototype.getPrefix = function(depth)
+BaseNode.prototype.toJson = function(depth)
 {
-	var prefix = "";
-	for(var i = 0; i < depth * 3; i++)
-	{
-		prefix += TAB;
-	}
-	return prefix;
-}
-
-//TODO isFinalChild
-BaseNode.prototype.toJson = function(depth, isFinalChild)
-{
-	var prefix = this.getPrefix(depth);
+	var prefix = (TAB).repeat(depth * 3);
 	var jsonStr = prefix + "{\n";
-	jsonStr += prefix + TAB + "\"Name\":\"" + this.name + "\", \"Type\":\"" + this.type + 
-						"\", \"X\":" + this.x + ", \"Y\":" + this.y +
-						", \"Width\":" + this.width + ", \"Height\":" + this.height;
-	if(this.children.length > 0) jsonStr += ",";
+	jsonStr += prefix + TAB;
+	jsonStr = this.addBaseProperty(jsonStr);
+	jsonStr = this.addSpecifiedProperty(jsonStr);
+	if(this.children.length == 0) jsonStr = jsonStr.substring(0, jsonStr.length - 2);//È¥µô¶ººÅ
 	jsonStr += "\n";
 	if(this.children.length > 0)
 	{
@@ -131,12 +121,46 @@ BaseNode.prototype.toJson = function(depth, isFinalChild)
 		var length = this.children.length;
 		for(var i = 0; i < length; i++)
 		{
-			jsonStr += this.children[i].toJson(depth + 1, (i == (length - 1)));
+			jsonStr += this.children[i].toJson(depth + 1);
+			if(i != (length - 1))
+			{
+				jsonStr += ",";
+			}
+			jsonStr += "\n";
 		}
 		jsonStr += prefix + TAB + TAB + "]\n";
 	}
 	jsonStr += prefix + "}";
-	if(!isFinalChild) jsonStr += ",";
-	jsonStr += "\n";
 	return jsonStr;
+}
+
+BaseNode.prototype.addSpecifiedProperty = function(content)
+{
+	return content;
+}
+
+BaseNode.prototype.addBaseProperty = function(content)
+{
+	content += this.getJsonFormatProperty("Name", this.name, false);
+	content += this.getJsonFormatProperty("Type", this.type, false);
+	content += this.getJsonFormatProperty("X", this.x, true);
+	content += this.getJsonFormatProperty("Y", this.y, true);
+	content += this.getJsonFormatProperty("Width", this.width, true);
+	content += this.getJsonFormatProperty("Height", this.height, true);
+	return content;
+}
+
+BaseNode.prototype.getJsonFormatProperty = function(propertyName, propertyValue, isNumber)
+{
+	var result = "\"" + propertyName + "\":";
+	if(isNumber)
+	{
+		result += propertyValue;
+	}
+	else
+	{
+		result += "\"" + propertyValue + "\"";
+	}
+	result +=  ", ";
+	return result;
 }
