@@ -28,7 +28,6 @@ Extractor.prototype.extract = function()
 		{
 			continue;
 		}
-		
 
         switch(layerSection)
         {

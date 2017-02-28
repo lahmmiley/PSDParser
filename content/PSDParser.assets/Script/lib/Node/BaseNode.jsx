@@ -7,17 +7,15 @@ const TYPE_TOGGLEGROUP = "togglegroup";
 const TYPE_SCROLLVIEW = "scrollview";
 const TYPE_LIST = "list";
 
-const TypeMap = 
-{
-    TYPE_IMAGE:1,
-    TYPE_TEXT:1,
-    TYPE_CONTAINER:1,
-    TYPE_BUTTON:1,
-	TYPE_TOGGLE:1,
-	TYPE_TOGGLEGROUP:1,
-	TYPE_SCROLLVIEW:1,
-	TYPE_LIST:1,
-}
+const TypeMap = new Object();
+TypeMap[TYPE_IMAGE] = 1;
+TypeMap[TYPE_TEXT] = 1;
+TypeMap[TYPE_CONTAINER] = 1;
+TypeMap[TYPE_BUTTON] = 1;
+TypeMap[TYPE_TOGGLE] = 1;
+TypeMap[TYPE_TOGGLEGROUP] = 1;
+TypeMap[TYPE_SCROLLVIEW] = 1;
+TypeMap[TYPE_LIST] = 1;
 
 function inherit(p)
 {
@@ -36,6 +34,12 @@ String.empty = "";
 String.prototype.repeat = function(n)
 {
 	return new Array(n + 1).join(this);
+}
+
+String.prototype.startWith = function(str)
+{     
+  var reg=new RegExp("^" + str);     
+  return reg.test(this);        
 }
 
 function BaseNode()
@@ -81,19 +85,37 @@ BaseNode.prototype.parseLayerName = function()
 BaseNode.prototype.setParam = function(layerName)
 {
 	var tokenList = layerName.split("_");
-	this.type = this.getType();
-	this.name = tokenList[0];
-	if(tokenList.length == 2)
+	if(this.type != null)
 	{
-		this.param = tokenList[1];
+		this.name = tokenList[0];
+	}
+	else
+	{
+		var hasType = TypeMap.hasOwnProperty(tokenList[0].toLowerCase());
+		if(hasType)
+		{
+			this.type = tokenList[0].toLowerCase();
+			this.name = tokenList[1];
+		}
+		else
+		{
+			this.type = TYPE_CONTAINER;
+			this.name = tokenList[0];
+		}
+	}
+
+	for(var i = 1; i < tokenList.length; i++)
+	{
+		var token = tokenList[i];
+		if(token.startWith("@"))
+		{
+			this.param = token.substring(1, token.length);
+		}
 	}
 }
 
-//文本图层返回的是实际像素的区域，比文本框范围略小
-//游戏研发过程中需要更加具体使用的字体和字号在此基础上调整文本框范围值
 BaseNode.prototype.calculateBounds = function()
 {
-    //TODO
     var descBounds = this.descriptor.getObjectValue(ST("bounds"));
     var left = descBounds.getUnitDoubleValue(ST("left"));
     var top = descBounds.getUnitDoubleValue(ST("top"));

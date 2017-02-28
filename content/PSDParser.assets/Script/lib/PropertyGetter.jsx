@@ -50,6 +50,10 @@ PropertyGetter.prototype.getProperty = function(object, descriptor, isArray, dep
 		{
 			result += prefix + "name:" + name+ "    type:" + TS(descriptor.getEnumerationType(key)) + "    value:" + TS(descriptor.getEnumerationValue(key)) + "\n";
 		}
+		else if ("DescValueType.UNITDOUBLE" == type)
+		{
+			result += prefix + "name:" + name+ "    type:" + typeIDToStringID(descriptor.getUnitDoubleType(key)) + "    value:" + descriptor.getUnitDoubleValue(key) + "\n";
+		}
 		else
 		{
 			result += prefix + "name:" + name+ "    type:" + type + "    value:" + object[name] + "\n";

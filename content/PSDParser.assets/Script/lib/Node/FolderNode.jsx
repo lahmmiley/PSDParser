@@ -31,25 +31,3 @@ FolderNode.prototype.calculateBounds = function()
     this.width = right - left;
     this.height = bottom - top;
 }
-
-FolderNode.prototype.setParam = function(layerName)
-{
-	var tokenList = layerName.split("_");
-	var hasType = TypeMap.hasOwnProperty(tokenList[0].toLowerCase());
-	var paramIndex = 1;
-    if(hasType)
-    {
-        this.type = tokenList[0].toLowerCase();
-		this.name = tokenList[1];
-		paramIndex = 2;
-    }
-	else
-	{
-		this.type = TYPE_CONTAINER;
-		this.name = tokenList[0];
-	}
-	if(tokenList.length == (paramIndex + 1))
-	{
-		this.param = tokenList[paramIndex];
-	}
-}

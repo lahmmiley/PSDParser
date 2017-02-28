@@ -49,16 +49,17 @@ ImageExporter.prototype.exportAllLayers = function(data)
     for(var i = 0; i < children.length; i++)
     {
         var child = children[i];
-        if(child.type == "image")
-        {
-            this.exportImageLayer(child);
-        }
-        else if(child.type == "text")
-		{}
-        else
-        {
+		if(child.children.length == 0)
+		{
+			if(child.type == TYPE_IMAGE)
+			{
+				this.exportImageLayer(child);
+			}
+		}
+		else
+		{
             this.exportAllLayers(child);
-        }
+		}
     }
 }
 
