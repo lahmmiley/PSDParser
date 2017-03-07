@@ -5,7 +5,7 @@ function ImageExporter(env)
 	this.env = env;
 	this.imageExportPath = this.env.imageFolderPath + this.env.name + "/";
     var folder = new Folder(this.imageExportPath);
-    if(folder.exists == true)
+    if(folder.exists)
     {
         var files = folder.getFiles();
         for(var i = 0;i < files.length;i++)
@@ -66,7 +66,7 @@ ImageExporter.prototype.exportAllLayers = function(data)
 ImageExporter.prototype.exportImageLayer = function(data)
 {
     var name = data.name;
-    if(this.assetMap[name] == null)
+    if((data.belongPsd == this.env.name) && (this.assetMap[name] == null))
     {
         this.assetMap[name] = 1;
         var imagePath = this.imageExportPath + name + ".png";
@@ -97,27 +97,6 @@ ImageExporter.prototype.selectLayer = function(data)
 
 ImageExporter.prototype.duplicateLayerToWorkbench = function(data)
 {
-	//var idDplc = charIDToTypeID( "Dplc" );
-    //var desc37 = new ActionDescriptor();
-    //var idnull = charIDToTypeID( "null" );
-    //    var ref31 = new ActionReference();
-    //    var idLyr = charIDToTypeID( "Lyr " );
-    //    var idOrdn = charIDToTypeID( "Ordn" );
-    //    var idTrgt = charIDToTypeID( "Trgt" );
-    //    ref31.putEnumerated( idLyr, idOrdn, idTrgt );
-    //desc37.putReference( idnull, ref31 );
-    //var idT = charIDToTypeID( "T   " );
-    //    var ref32 = new ActionReference();
-    //    var idDcmn = charIDToTypeID( "Dcmn" );
-    //    ref32.putName( idDcmn, WORKBENCH );
-    //desc37.putReference( idT, ref32 );
-    //var idNm = charIDToTypeID( "Nm  " );
-    //desc37.putString( idNm, """" + data.name + """" );
-    //var idVrsn = charIDToTypeID( "Vrsn" );
-    //desc37.putInteger( idVrsn, 5 );
-	//executeAction( idDplc, desc37, DialogModes.NO );
-
-
     var desc = new ActionDescriptor();
     var layerRef = new ActionReference();
     layerRef.putEnumerated(ST("layer"), ST("ordinal"), ST("targetEnum"));

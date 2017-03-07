@@ -4,10 +4,12 @@ const TS = typeIDToStringID;
 
 const DUMMY_TOKEN_LIST = [/\#/g, /\./g, / /g, /¸±±¾\d*/g, /¿½±´\d*/g, /copy\d*/g];
 const TAB = "    "
-
 const NOT_EXPORT = "notexport";
 
-function Extractor() {}
+function Extractor(env) 
+{
+	this.env = env;
+}
 
 Extractor.prototype.extract = function()
 {
@@ -64,7 +66,7 @@ Extractor.prototype.dealLayerSectionContent = function(descriptor, currentNode, 
     else
     {
         node = new ImageNode(descriptor);
-        node.layerIndex = index;
+		node.setFragments(index, this.env.commonAssetMap, this.env.name);
     }
     node.calculateBounds();
     node.parent = currentNode;

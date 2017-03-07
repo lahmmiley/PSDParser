@@ -6,6 +6,8 @@ function TextNode(descriptor)
 defineSubClass(BaseNode, TextNode);
 
 //对比unity数值比较偏差
+//假设一开始psd的size为1 unity中的size也为1
+//那么UnityFontHeightOffsetMap[8] = 1 的意思就是当psd的size为8时，unity的size为9，有1点偏差
 const UnityFontHeightOffsetMap = new Object();
 UnityFontHeightOffsetMap[8] = 1;
 UnityFontHeightOffsetMap[12] = 1;
@@ -24,7 +26,7 @@ TextNode.prototype.calculateBounds = function()
     var left = descBounds.getUnitDoubleValue(ST("left"));
     var top = descBounds.getUnitDoubleValue(ST("top"));
     var right = descBounds.getUnitDoubleValue(ST("right"));
-    var bottom = descBounds.getUnitDoubleValue(ST("bottom"));
+    var top = descBounds.getUnitDoubleValue(ST("top"));
     this.x = left;
     this.y = top;
 	var height = this.size;
@@ -41,10 +43,6 @@ TextNode.prototype.calculateBounds = function()
 
 TextNode.prototype.addSpecifiedProperty = function(content)
 {
-	if(this.param != null)
-	{
-		content += this.getJsonFormatProperty("Param", this.param, false);
-	}
 	content += this.getJsonFormatProperty("Size", this.fragments[0].size, true);
 	var text = String.empty;
     for(var i = 0; i < this.fragments.length; i++)

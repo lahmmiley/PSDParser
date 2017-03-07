@@ -30,18 +30,6 @@ function defineSubClass(superClass, constructor)
     constructor.prototype.constructor = constructor;
 }
 
-String.empty = "";
-String.prototype.repeat = function(n)
-{
-	return new Array(n + 1).join(this);
-}
-
-String.prototype.startWith = function(str)
-{     
-  var reg=new RegExp("^" + str);     
-  return reg.test(this);        
-}
-
 function BaseNode()
 {
     this.descriptor = arguments[0];
@@ -169,6 +157,10 @@ BaseNode.prototype.addBaseProperty = function(content)
 	content += this.getJsonFormatProperty("Y", this.y, true);
 	content += this.getJsonFormatProperty("Width", this.width, true);
 	content += this.getJsonFormatProperty("Height", this.height, true);
+	if(this.param != null)
+	{
+		content += this.getJsonFormatProperty("Param", this.param, false);
+	}
 	return content;
 }
 
