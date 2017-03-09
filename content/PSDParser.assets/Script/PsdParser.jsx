@@ -1,6 +1,5 @@
 #include "lib/Environment.jsx";
 #include "lib/Extractor.jsx";
-#include "lib/DebugWriter.jsx";
 #include "lib/FileWriter.jsx";
 #include "lib/ImageExporter.jsx";
 #include "lib/MessageSender.jsx";
@@ -23,6 +22,8 @@ function main()
 	var path = env.dataFolderPath + env.name + ".json";
 	new FileWriter(env).write(path, root.toJson(0, true));
 	//new ImageExporter(env).export(root);
+	//TODO
+	//new MessageSender().sendMessage();
 }
 
 main();

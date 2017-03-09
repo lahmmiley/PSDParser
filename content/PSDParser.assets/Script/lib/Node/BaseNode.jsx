@@ -43,12 +43,6 @@ function BaseNode()
 
 	//解析参数
 	this.parseLayerName();
-
-    this.toString = function()
-    {
-        return ("name:" + this.name + "  type:" + this.type + 
-                    "  " + this.x + "  " + this.y + "  " + this.width + "  " + this.height);
-    }
 }
 
 //不放在类内部是因为类初始化就会用到这个函数，需要把函数定义在调用之前
@@ -144,11 +138,6 @@ BaseNode.prototype.toJson = function(depth)
 	return jsonStr;
 }
 
-BaseNode.prototype.addSpecifiedProperty = function(content)
-{
-	return content;
-}
-
 BaseNode.prototype.addBaseProperty = function(content)
 {
 	content += this.getJsonFormatProperty("Name", this.name, false);
@@ -161,6 +150,11 @@ BaseNode.prototype.addBaseProperty = function(content)
 	{
 		content += this.getJsonFormatProperty("Param", this.param, false);
 	}
+	return content;
+}
+
+BaseNode.prototype.addSpecifiedProperty = function(content)
+{
 	return content;
 }
 

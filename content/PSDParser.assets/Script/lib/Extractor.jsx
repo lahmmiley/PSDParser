@@ -61,7 +61,7 @@ Extractor.prototype.dealLayerSectionContent = function(descriptor, currentNode, 
     if(this.isTextLayer(descriptor))
     {
         node = new TextNode(descriptor);
-		node.setFragments(descriptor);
+		node.parseTextStyleRangeList(descriptor);
     }
     else
     {

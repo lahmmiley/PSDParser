@@ -11,5 +11,3 @@ MessageSender.prototype.sendMessage = function()
         this.socket.close();
     }
 }
-
-//new MessageSender().sendMessage();
