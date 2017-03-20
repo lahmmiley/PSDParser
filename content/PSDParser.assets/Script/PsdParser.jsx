@@ -21,7 +21,7 @@ function main()
 	var root = new Extractor(env).extract();
 	var path = env.dataFolderPath + env.name + ".json";
 	new FileWriter(env).write(path, root.toJson(0, true));
-	//new ImageExporter(env).export(root);
+	new ImageExporter(env).export(root);
 	//TODO
 	//new MessageSender().sendMessage();
 }
