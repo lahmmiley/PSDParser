@@ -1,23 +1,3 @@
-const COMMON = "Common";
-
-String.empty = "";
-String.prototype.repeat = function(n)
-{
-	return new Array(n + 1).join(this);
-}
-
-String.prototype.startWith = function(str)
-{     
-  var reg=new RegExp("^" + str);     
-  return reg.test(this);        
-}
-
-String.prototype.endWith = function(str)
-{     
-  var reg=new RegExp(str + "$");     
-  return reg.test(this);        
-}
-
 function Environment(doc)
 {
 	this.doc = doc;
@@ -30,7 +10,7 @@ function Environment(doc)
 	new PropertyGetter(this);
 	this.readCommonAssets();
 
-	//ÉèÖÃĞÂ½¨²Ã¼ôÃæ°åµÄµ¥Î»¡ª¡ªÏñËØ
+	//è®¾ç½®æ–°å»ºè£å‰ªé¢æ¿çš„å•ä½â€•â€•åƒç´ 
 	app.preferences.rulerUnits = Units.PIXELS;
 	app.preferences.typeUnits = TypeUnits.PIXELS;
 }

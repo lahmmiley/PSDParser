@@ -46,6 +46,7 @@ TextNode.prototype.calculateHeight = function(size)
 
 TextNode.prototype.parseTextStyleRangeList = function(descriptor)
 {
+	//new PropertyGetter().writeAllProperty(descriptor);
     var textStyle = descriptor.getObjectValue(ST("textKey"));
     var content = textStyle.getString(ST("textKey"));
     var styleRangeList = textStyle.getList(ST("textStyleRange"));
@@ -55,13 +56,19 @@ TextNode.prototype.parseTextStyleRangeList = function(descriptor)
         factor = textStyle.getObjectValue(ST("transform")).getUnitDoubleValue(ST("yy"));
     }
 	var fragments = [];
+	var lastIndex = -1
     for(var i = 0; i < styleRangeList.count; i++)
     {
         var styleRange = styleRangeList.getObjectValue(i);
         var start = styleRange.getInteger(ST("from"));
+        if(start == lastIndex)
+        {
+        	continue;
+        }
+        lastIndex = start;
         var end = styleRange.getInteger(ST("to"));
         var style = styleRange.getObjectValue(ST("textStyle"));
-        var text = content.substring(start, end);
+        var text = content.substring(start, end).replace(/\r/g, "\\n");
         var size = style.getUnitDoubleValue(ST("size"));
         var color = style.getObjectValue(ST("color"));
         var textColor = new SolidColor();
@@ -88,9 +95,9 @@ TextNode.prototype.setTextFormat = function(fragments)
 		{
 			this.color = fragment.color;
 		}
-		if(fragments.length == 1)
+		if((fragment.color == this.color) || (fragments.length == 1))
 		{
-			text = fragment.text;
+			text += fragment.text;
 		}
 		else
 		{

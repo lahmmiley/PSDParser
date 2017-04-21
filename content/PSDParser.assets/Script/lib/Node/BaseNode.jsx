@@ -1,36 +1,6 @@
-const TYPE_IMAGE = "image";
-const TYPE_IMAGE_FOLDER = "imagefolder";
-const TYPE_TEXT = "text";
-const TYPE_CONTAINER = "container";
-const TYPE_BUTTON = "button";
-const TYPE_TOGGLE = "toggle";
-const TYPE_TOGGLE_GROUP = "togglegroup";
-const TYPE_SCROLL_VIEW = "scrollview";
-const TYPE_LIST = "list";
+#include "NodeType.jsx";
 
-const TypeMap = new Object();
-TypeMap[TYPE_IMAGE] = 1;
-TypeMap[TYPE_IMAGE_FOLDER] = 1;
-TypeMap[TYPE_TEXT] = 1;
-TypeMap[TYPE_CONTAINER] = 1;
-TypeMap[TYPE_BUTTON] = 1;
-TypeMap[TYPE_TOGGLE] = 1;
-TypeMap[TYPE_TOGGLE_GROUP] = 1;
-TypeMap[TYPE_SCROLL_VIEW] = 1;
-TypeMap[TYPE_LIST] = 1;
-
-function inherit(p)
-{
-    function f() {};
-    f.prototype = p;
-    return new f();
-}
-
-function defineSubClass(superClass, constructor)
-{
-    constructor.prototype = inherit(superClass.prototype);
-    constructor.prototype.constructor = constructor;
-}
+const DUMMY_TOKEN_LIST = [/\#/g, /\./g, / /g, /å‰¯æœ¬ \d*/g, /å‰¯æœ¬\d*/g, /æ‹·è´ \d*/g, /æ‹·è´\d*/g, /copy\d*/g];
 
 function BaseNode()
 {
@@ -43,11 +13,11 @@ function BaseNode()
     this.width = 0;
     this.height = 0;
 
-	//½âÎö²ÎÊı
+	//è§£æå‚æ•°
 	this.parseLayerName();
 }
 
-//²»·ÅÔÚÀàÄÚ²¿ÊÇÒòÎªÀà³õÊ¼»¯¾Í»áÓÃµ½Õâ¸öº¯Êı£¬ĞèÒª°Ñº¯Êı¶¨ÒåÔÚµ÷ÓÃÖ®Ç°
+//ä¸æ”¾åœ¨ç±»å†…éƒ¨æ˜¯å› ä¸ºç±»åˆå§‹åŒ–å°±ä¼šç”¨åˆ°è¿™ä¸ªå‡½æ•°ï¼Œéœ€è¦æŠŠå‡½æ•°å®šä¹‰åœ¨è°ƒç”¨ä¹‹å‰
 BaseNode.prototype.parseLayerName = function()
 {
     if(this.descriptor == null)
@@ -60,7 +30,11 @@ BaseNode.prototype.parseLayerName = function()
 		var layerName = this.descriptor.getString(ST("name"));
 		for(var i = 0;i < DUMMY_TOKEN_LIST.length;i++)
 		{
-			layerName = layerName.replace(DUMMY_TOKEN_LIST[i], "");
+			layerName = layerName.replace(DUMMY_TOKEN_LIST[i], String.empty);
+		}
+		if(layerName.containChinese())
+		{
+			throw layerName + " åŒ…å«ä¸­æ–‡!"
 		}
 		this.setParam(layerName);
     }
@@ -68,7 +42,7 @@ BaseNode.prototype.parseLayerName = function()
 
 BaseNode.prototype.setParam = function(layerName)
 {
-	var tokenList = layerName.split("_");
+	var tokenList = layerName.split("|");
 	if(this.type != null)
 	{
 		this.name = tokenList[0];
@@ -93,7 +67,8 @@ BaseNode.prototype.setParam = function(layerName)
 		var token = tokenList[i];
 		if(token.startWith("@"))
 		{
-			this.param = token.substring(1, token.length);
+			if(this.param == null) { this.param = String.empty }
+			this.param += token.substring(1, token.length) + " ";
 		}
 	}
 }
@@ -118,7 +93,7 @@ BaseNode.prototype.toJson = function(depth)
 	jsonStr += prefix + TAB;
 	jsonStr = this.addBaseProperty(jsonStr);
 	jsonStr = this.addSpecifiedProperty(jsonStr);
-	if(this.children.length == 0) jsonStr = jsonStr.substring(0, jsonStr.length - 2);//È¥µô¶ººÅ
+	if(this.children.length == 0) jsonStr = jsonStr.substring(0, jsonStr.length - 2);//ÃˆÂ¥ÂµÃ´Â¶ÂºÂºÃ…
 	jsonStr += "\n";
 	if(this.children.length > 0)
 	{
@@ -150,7 +125,9 @@ BaseNode.prototype.addBaseProperty = function(content)
 	content += this.getJsonFormatProperty("Height", this.height, true);
 	if(this.param != null)
 	{
-		content += this.getJsonFormatProperty("Param", this.param, false);
+		var lowerParam = this.param.toLowerCase()
+		if(lowerParam.indexOf("attach") != -1) content += this.getJsonFormatProperty("Attach", 1, true);
+		if(lowerParam.indexOf("prefab") != -1) content += this.getJsonFormatProperty("Prefab", 1, true);
 	}
 	return content;
 }

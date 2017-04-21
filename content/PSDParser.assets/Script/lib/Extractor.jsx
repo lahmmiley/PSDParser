@@ -1,10 +1,10 @@
-//提取psd文件的信息
+#include "Node/BaseNode.jsx";
+#include "Node/FolderNode.jsx";
+#include "Node/ImageNode.jsx";
+#include "Node/TextNode.jsx";
+
 const ST = stringIDToTypeID;
 const TS = typeIDToStringID;
-
-const DUMMY_TOKEN_LIST = [/\#/g, /\./g, / /g, /副本\d*/g, /拷贝\d*/g, /copy\d*/g];
-const TAB = "    "
-const NOT_EXPORT = "notexport";
 
 function Extractor(env) 
 {
@@ -79,7 +79,6 @@ Extractor.prototype.dealLayerSectionEnd = function(currentNode)
     return currentNode.parent;
 }
 
-//工具函数
 Extractor.prototype.getLayerCount = function()
 {
     var ref = new ActionReference();
