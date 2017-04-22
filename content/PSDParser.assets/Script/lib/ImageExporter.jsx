@@ -1,4 +1,5 @@
-const WORKBENCH = "workbench";
+﻿const WORKBENCH = "workbench";
+const PLACEHOLDER = "placeholder"
 
 function ImageExporter(env)
 {
@@ -62,11 +63,11 @@ ImageExporter.prototype.exportAllLayers = function(data)
 
 ImageExporter.prototype.exportImageLayer = function(data)
 {
-    var name = data.name;
-    if((data.belongPsd == this.env.name) && (this.assetMap[name] == null))
+    if(this.exportable(data))
     {
+        var name = data.name;
         this.assetMap[name] = 1;
-        var imagePath = this.imageExportPath + name + ".png";
+        var imagePath = this.imageExportPath + name + PNG_POSTFIX;
         this.exportImageInWorkbench(data, imagePath);
     }
 }
@@ -125,4 +126,16 @@ ImageExporter.prototype.close = function()
     var idN = charIDToTypeID( "N   " );
     desc30.putEnumerated( idSvng, idYsN, idN );
     executeAction( idCls, desc30, DialogModes.NO );
+}
+
+ImageExporter.prototype.exportable = function(data)
+{
+    var name = data.name;
+    if((data.belongPsd == this.env.name) &&
+        (this.assetMap[name] == null) &&
+        (name != PLACEHOLDER))
+    {
+       return SUCCESS;
+    }
+    return FAILURE;
 }
