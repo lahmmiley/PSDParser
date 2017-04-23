@@ -1,13 +1,4 @@
 #include "lib/Environment.jsx";
-#include "lib/Extractor.jsx";
-#include "lib/FileWriter.jsx";
-#include "lib/ImageExporter.jsx";
-#include "lib/MessageSender.jsx";
-#include "lib/PropertyGetter.jsx";
-#include "lib/Node/BaseNode.jsx";
-#include "lib/Node/FolderNode.jsx";
-#include "lib/Node/ImageNode.jsx";
-#include "lib/Node/TextNode.jsx";
 
 function main()
 {
@@ -21,9 +12,6 @@ function main()
 	var root = new Extractor(env).extract();
 	var path = env.dataFolderPath + env.name + JSON_POSTFIX;
 	new FileWriter(env).write(path, root.toJson(0, true));
-	//new ImageExporter(env).export(root);
-	//TODO
-	//new MessageSender().sendMessage();
 }
 
 main();

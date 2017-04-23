@@ -1,19 +1,10 @@
-﻿#include "lib/Base/BaseDefine.jsx";
-#include "lib/Base/BaseClass.jsx";
-#include "lib/Tool/StringExtension.jsx";
-
-#include "lib/Environment.jsx";
-#include "lib/Extractor.jsx";
-#include "lib/FileWriter.jsx";
-#include "lib/ImageExporter.jsx";
-#include "lib/MessageSender.jsx";
-#include "lib/PropertyGetter.jsx";
+﻿#include "lib/Environment.jsx";
 
 function main()
 {
 	if(app.documents.length == 0)
     {
-        alert("没有打开psd文件！");
+        alert("未找到可解析的Psd文件！");
         return;
     }
 

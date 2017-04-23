@@ -1,3 +1,12 @@
+#include "Base/BaseDefine.jsx";
+#include "Base/BaseClass.jsx";
+#include "Tool/StringExtension.jsx";
+#include "Extractor.jsx";
+#include "FileWriter.jsx";
+#include "ImageExporter.jsx";
+#include "MessageSender.jsx";
+#include "PropertyGetter.jsx";
+
 function Environment(doc)
 {
 	this.doc = doc;
