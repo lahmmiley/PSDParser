@@ -9,13 +9,14 @@ defineSubClass(BaseNode, TextNode);
 //当psd的size为1 unity中的size也为1
 //那么UnityFontHeightOffsetMap[8] = 1 的意思就是当psd的size为8时，unity的size为9，有1点偏差
 const UnityFontHeightOffsetMap = new Object();
-UnityFontHeightOffsetMap[8] = 1;
-UnityFontHeightOffsetMap[12] = 1;
-UnityFontHeightOffsetMap[22] = 1;
-UnityFontHeightOffsetMap[31] = 1;
-UnityFontHeightOffsetMap[41] = 1;
+UnityFontHeightOffsetMap[1] = 1;
+UnityFontHeightOffsetMap[13] = 1;
+UnityFontHeightOffsetMap[19] = 1;
+UnityFontHeightOffsetMap[26] = 1;
+UnityFontHeightOffsetMap[32] = 1;
+UnityFontHeightOffsetMap[38] = 1;
+UnityFontHeightOffsetMap[45] = 1;
 UnityFontHeightOffsetMap[50] = 1;
-UnityFontHeightOffsetMap[55] = 1;
 
 //文本图层返回的是实际像素的区域，比文本框范围略小
 //游戏研发过程中需要更加具体使用的字体和字号在此基础上调整文本框范围值
@@ -46,7 +47,7 @@ TextNode.prototype.calculateHeight = function(size)
 
 TextNode.prototype.parseTextStyleRangeList = function(descriptor)
 {
-	//new PropertyGetter().writeAllProperty(descriptor);
+	new PropertyGetter().writeAllProperty(descriptor);
     var textStyle = descriptor.getObjectValue(ST("textKey"));
     var content = textStyle.getString(ST("textKey"));
     var styleRangeList = textStyle.getList(ST("textStyleRange"));
