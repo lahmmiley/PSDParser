@@ -31,3 +31,19 @@ FolderNode.prototype.calculateBounds = function()
     this.width = right - left;
     this.height = bottom - top;
 }
+
+FolderNode.prototype.addSpecifiedProperty = function(content)
+{
+	if(this.param != null)
+	{
+		var paramStr = this.param.toLowerCase()
+		var paramList = paramStr.split(" ");
+		for(var i = 0; i < paramList.length; i++)
+		{
+			var param = paramList[i];
+			if(param.startWith("prefab")) content += this.getJsonFormatProperty("Prefab", 1, true);
+			if(param.startWith("window")) content += this.getJsonFormatProperty("Window", 1, true);
+		}
+	}
+	return content;
+}

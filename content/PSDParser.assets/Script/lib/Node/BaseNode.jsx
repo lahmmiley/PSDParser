@@ -1,6 +1,7 @@
 #include "NodeType.jsx";
 
-const DUMMY_TOKEN_LIST = [/\#/g, /\./g, / /g, /副本 \d*/g, /副本\d*/g, /拷贝 \d*/g, /拷贝\d*/g, /copy\d*/g];
+const DUMMY_TOKEN_LIST = [/\#/g, / /g, /副本 \d*/g, /副本\d*/g, /拷贝 \d*/g, /拷贝\d*/g, /copy\d*/g];
+// /\./g, 
 
 function BaseNode()
 {
@@ -125,9 +126,16 @@ BaseNode.prototype.addBaseProperty = function(content)
 	content += this.getJsonFormatProperty("Height", this.height, true);
 	if(this.param != null)
 	{
-		var lowerParam = this.param.toLowerCase()
-		if(lowerParam.indexOf("attach") != -1) content += this.getJsonFormatProperty("Attach", 1, true);
-		if(lowerParam.indexOf("prefab") != -1) content += this.getJsonFormatProperty("Prefab", 1, true);
+		if(this.param != null)
+		{
+			var paramStr = this.param.toLowerCase()
+			var paramList = paramStr.split(" ");
+			for(var i = 0; i < paramList.length; i++)
+			{
+				var param = paramList[i];
+				if(param.startWith("attach")) content += this.getJsonFormatProperty("Attach", 1, true);
+			}
+		}
 	}
 	return content;
 }

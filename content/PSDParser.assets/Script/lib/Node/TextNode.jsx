@@ -5,19 +5,6 @@ function TextNode(descriptor)
 }
 defineSubClass(BaseNode, TextNode);
 
-//对比unity数值比较偏差
-//当psd的size为1 unity中的size也为1
-//那么UnityFontHeightOffsetMap[8] = 1 的意思就是当psd的size为8时，unity的size为9，有1点偏差
-const UnityFontHeightOffsetMap = new Object();
-UnityFontHeightOffsetMap[1] = 1;
-UnityFontHeightOffsetMap[13] = 1;
-UnityFontHeightOffsetMap[19] = 1;
-UnityFontHeightOffsetMap[26] = 1;
-UnityFontHeightOffsetMap[32] = 1;
-UnityFontHeightOffsetMap[38] = 1;
-UnityFontHeightOffsetMap[45] = 1;
-UnityFontHeightOffsetMap[50] = 1;
-
 //文本图层返回的是实际像素的区域，比文本框范围略小
 //游戏研发过程中需要更加具体使用的字体和字号在此基础上调整文本框范围值
 TextNode.prototype.calculateBounds = function()
@@ -26,28 +13,16 @@ TextNode.prototype.calculateBounds = function()
     var left = descBounds.getUnitDoubleValue(ST("left"));
     var top = descBounds.getUnitDoubleValue(ST("top"));
     var right = descBounds.getUnitDoubleValue(ST("right"));
+    var bottom = descBounds.getUnitDoubleValue(ST("bottom"));
     this.x = left;
     this.y = top;
     this.width = right - left;
-    this.height = this.calculateHeight(this.size);
-}
-
-TextNode.prototype.calculateHeight = function(size)
-{
-	var height = size;
-	for(var key in UnityFontHeightOffsetMap)
-	{
-		if(size >= key)
-		{
-			height += 1;
-		}
-	}
-	return height;
+	this.height = bottom - top;
 }
 
 TextNode.prototype.parseTextStyleRangeList = function(descriptor)
 {
-	new PropertyGetter().writeAllProperty(descriptor);
+	//new PropertyGetter().writeAllProperty(descriptor);
     var textStyle = descriptor.getObjectValue(ST("textKey"));
     var content = textStyle.getString(ST("textKey"));
     var styleRangeList = textStyle.getList(ST("textStyleRange"));
@@ -78,6 +53,8 @@ TextNode.prototype.parseTextStyleRangeList = function(descriptor)
         textColor.rgb.blue = color.getInteger(ST("blue"));
         fragments.push({text:text, size:Math.round(size * factor), color:textColor.rgb.hexValue});
     }
+	this.oneLine = this.isOneLine(content, textStyle);
+	this.orientation = TS(textStyle.getEnumerationValue(ST("orientation")));
 	this.setTextFormat(fragments);
 }
 
@@ -114,5 +91,28 @@ TextNode.prototype.addSpecifiedProperty = function(content)
 	content += this.getJsonFormatProperty("Size", this.size, true);
 	content += this.getJsonFormatProperty("Color", "0x" + this.color, false);
 	content += this.getJsonFormatProperty("Text", this.text, false);
+	content += this.getJsonFormatProperty("OneLine", this.oneLine ? 1 : 0, true);
+	content += this.getJsonFormatProperty("Orientation", this.orientation, false);
+	if(this.param != null)
+	{
+		var paramStr = this.param.toLowerCase()
+		var paramList = paramStr.split(" ");
+		for(var i = 0; i < paramList.length; i++)
+		{
+			var param = paramList[i];
+			if(param.startWith("linespacing")) content += this.getJsonFormatProperty("LineSpacing", param.substring(11, param.length), true);
+			//TODO leftmiddleright
+		}
+	}
 	return content;
+}
+
+TextNode.prototype.isOneLine = function(content)
+{
+	//if((content.indexOf("\n") == -1) &&
+	if (content.indexOf("\r") == -1)
+	{
+		return true;
+	}
+	return false;
 }
