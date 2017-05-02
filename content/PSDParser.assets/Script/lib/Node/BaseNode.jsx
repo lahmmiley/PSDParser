@@ -126,15 +126,12 @@ BaseNode.prototype.addBaseProperty = function(content)
 	content += this.getJsonFormatProperty("Height", this.height, true);
 	if(this.param != null)
 	{
-		if(this.param != null)
+		var paramStr = this.param.toLowerCase()
+		var paramList = paramStr.split(" ");
+		for(var i = 0; i < paramList.length; i++)
 		{
-			var paramStr = this.param.toLowerCase()
-			var paramList = paramStr.split(" ");
-			for(var i = 0; i < paramList.length; i++)
-			{
-				var param = paramList[i];
-				if(param.startWith("attach")) content += this.getJsonFormatProperty("Attach", 1, true);
-			}
+			var param = paramList[i];
+			if(param.startWith("attach")) content += this.getJsonFormatProperty("Attach", 1, true);
 		}
 	}
 	return content;
