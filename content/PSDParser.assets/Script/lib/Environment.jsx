@@ -4,7 +4,6 @@
 #include "Extractor.jsx";
 #include "FileWriter.jsx";
 #include "ImageExporter.jsx";
-#include "MessageSender.jsx";
 #include "PropertyGetter.jsx";
 
 function Environment(doc)
@@ -13,7 +12,8 @@ function Environment(doc)
 	this.width = doc.width;
 	this.height = doc.height;
 	this.name = this.getPsdName(doc.name).replace(/\.(psd|png)/i, "");
-	this.resourcesFolderPath = String(doc.path).slice(0, -3);
+	var reg = /(.*)\/.*\/.*/;
+	this.resourcesFolderPath = String(doc.path).replace(reg, '$1') + "/";
 	this.imageFolderPath = this.resourcesFolderPath + "Image/";
     this.dataFolderPath = this.resourcesFolderPath + "Data/";
 	new PropertyGetter(this);
@@ -45,7 +45,7 @@ Environment.prototype.readCommonAssets = function()
         for(var i = 0;i < files.length;i++)
         {
 			var name = files[i].name;
-			name = name.replace(".png", String.empty);
+			name = name.replace(PNG_POSTFIX, String.empty);
 			this.commonAssetMap[name] = 1;
         }
 	}

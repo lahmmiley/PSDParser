@@ -13,8 +13,6 @@ function main()
 	var path = env.dataFolderPath + env.name + JSON_POSTFIX;
 	new FileWriter(env).write(path, root.toJson(0, true));
 	new ImageExporter(env).export(root);
-	//TODO
-	//new MessageSender().sendMessage();
 }
 
 main();

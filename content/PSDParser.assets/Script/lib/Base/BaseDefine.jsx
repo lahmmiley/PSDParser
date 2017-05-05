@@ -1,4 +1,4 @@
-const COMMON = "Common";
+const COMMON = "Base";
 const TAB = "    "
 const NOT_EXPORT = "notexport";
 

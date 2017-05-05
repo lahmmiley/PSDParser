@@ -17,7 +17,12 @@ TextNode.prototype.calculateBounds = function()
     this.x = left;
     this.y = top;
     this.width = right - left;
-	this.height = bottom - top;
+    var offset = 1;
+    //根据'鹰 '字的偏差计算实际高度
+    if(this.size >= 19) offset += 1;
+    if(this.size >= 27) offset += 1;
+    if(this.size >= 30) offset += 1;
+	this.height = bottom - top + offset;
 }
 
 TextNode.prototype.parseTextStyleRangeList = function(descriptor)

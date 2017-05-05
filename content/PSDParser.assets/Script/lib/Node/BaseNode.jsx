@@ -137,6 +137,20 @@ BaseNode.prototype.addBaseProperty = function(content)
 	return content;
 }
 
+BaseNode.prototype.haveAttachParam = function()
+{
+	if(this.param == null)
+	{
+		return false;
+	}
+	var paramStr = this.param.toLowerCase()
+	if(paramStr.indexOf("attach") != -1)
+	{
+		return true;
+	}
+	return false;
+}
+
 BaseNode.prototype.addSpecifiedProperty = function(content)
 {
 	return content;
