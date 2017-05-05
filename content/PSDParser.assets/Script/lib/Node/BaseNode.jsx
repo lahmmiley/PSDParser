@@ -50,11 +50,12 @@ BaseNode.prototype.setParam = function(layerName)
 	}
 	else
 	{
-		var hasType = TypeMap.hasOwnProperty(tokenList[0].toLowerCase());
-		if(hasType)
+		if(this.namedType(tokenList))
 		{
 			this.type = tokenList[0].toLowerCase();
 			this.name = tokenList[1];
+			var hasType = TypeMap.hasOwnProperty(this.type);
+			if(!hasType) alert("不存在类型" + this.type);
 		}
 		else
 		{
@@ -62,7 +63,7 @@ BaseNode.prototype.setParam = function(layerName)
 			this.name = tokenList[0];
 		}
 	}
-
+	
 	for(var i = 1; i < tokenList.length; i++)
 	{
 		var token = tokenList[i];
@@ -137,20 +138,6 @@ BaseNode.prototype.addBaseProperty = function(content)
 	return content;
 }
 
-BaseNode.prototype.haveAttachParam = function()
-{
-	if(this.param == null)
-	{
-		return false;
-	}
-	var paramStr = this.param.toLowerCase()
-	if(paramStr.indexOf("attach") != -1)
-	{
-		return true;
-	}
-	return false;
-}
-
 BaseNode.prototype.addSpecifiedProperty = function(content)
 {
 	return content;
@@ -169,4 +156,27 @@ BaseNode.prototype.getJsonFormatProperty = function(propertyName, propertyValue,
 	}
 	result +=  ", ";
 	return result;
+}
+
+BaseNode.prototype.haveAttachParam = function()
+{
+	if(this.param == null)
+	{
+		return false;
+	}
+	var paramStr = this.param.toLowerCase()
+	if(paramStr.indexOf("attach") != -1)
+	{
+		return true;
+	}
+	return false;
+}
+
+BaseNode.prototype.namedType = function(tokenList)
+{
+	if((tokenList.length > 1) && (!tokenList[1].startWith("@")))
+	{
+		return true;
+	}
+	return false
 }
