@@ -1,8 +1,3 @@
-#include "Node/BaseNode.jsx";
-#include "Node/FolderNode.jsx";
-#include "Node/ImageNode.jsx";
-#include "Node/TextNode.jsx";
-
 const ST = stringIDToTypeID;
 const TS = typeIDToStringID;
 
@@ -66,7 +61,7 @@ Extractor.prototype.dealLayerSectionContent = function(descriptor, currentNode, 
     else
     {
         node = new ImageNode(descriptor);
-		node.setFragments(index, this.env.commonAssetMap, this.env.name);
+		node.setFragments(descriptor, index, this.env.commonAssetMap, this.env.name);
     }
     node.calculateBounds();
     node.parent = currentNode;

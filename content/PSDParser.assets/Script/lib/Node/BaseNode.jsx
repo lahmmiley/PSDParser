@@ -1,5 +1,3 @@
-#include "NodeType.jsx";
-
 const DUMMY_TOKEN_LIST = [/\#/g, / /g, /副本 \d*/g, /副本\d*/g, /拷贝 \d*/g, /拷贝\d*/g, /copy\d*/g];
 // /\./g, 
 

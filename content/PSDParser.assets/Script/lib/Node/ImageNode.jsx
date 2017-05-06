@@ -5,7 +5,7 @@ function ImageNode()
 }
 defineSubClass(BaseNode, ImageNode);
 
-ImageNode.prototype.setFragments = function(index, commonAssetMap, currentPsdName)
+ImageNode.prototype.setFragments = function(descriptor, index, commonAssetMap, currentPsdName)
 {
 	node.layerIndex = index;
 	if(commonAssetMap[this.name] != null)
@@ -16,11 +16,13 @@ ImageNode.prototype.setFragments = function(index, commonAssetMap, currentPsdNam
 	{
 		this.belongPsd = currentPsdName;
 	}
+	this.alpha = descriptor.getInteger(ST("opacity"));
 }
 
 ImageNode.prototype.addSpecifiedProperty = function(content)
 {
 	content += this.getJsonFormatProperty("BelongPsd", this.belongPsd, false);
+	content += this.getJsonFormatProperty("Alpha", this.alpha, false);
 	if(this.param != null)
 	{
 		var paramStr = this.param.toLowerCase()

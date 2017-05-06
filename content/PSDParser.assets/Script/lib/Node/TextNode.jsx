@@ -17,18 +17,45 @@ TextNode.prototype.calculateBounds = function()
     this.x = left;
     this.y = top;
     this.width = right - left;
-    var offset = 1;
-    //根据'鹰 '字的偏差计算实际高度
-    if(this.size >= 19) offset += 1;
-    if(this.size >= 27) offset += 1;
-    if(this.size >= 30) offset += 1;
-	this.height = bottom - top + offset;
+	this.height = bottom - top + Math.round(PsdFontOffsetMap[this.size]);
 }
 
 TextNode.prototype.parseTextStyleRangeList = function(descriptor)
 {
 	//new PropertyGetter().writeAllProperty(descriptor);
-    var textStyle = descriptor.getObjectValue(ST("textKey"));
+	this.parseOrientation(descriptor);
+	this.parseOneLine(descriptor);
+	var fragments = this.getTextFragments(descriptor);
+	this.parseTextFormat(fragments);
+	this.parseStokeEffect(descriptor);
+	this.parseDropShadowEffect(descriptor);
+	this.parseSolidFillEffect(descriptor);
+}
+
+TextNode.prototype.parseOrientation = function(descriptor)
+{
+	var textStyle = descriptor.getObjectValue(ST("textKey"));
+	this.orientation = TS(textStyle.getEnumerationValue(ST("orientation")));
+}
+
+TextNode.prototype.parseOneLine = function(descriptor)
+{
+	var textStyle = descriptor.getObjectValue(ST("textKey"));
+    var content = textStyle.getString(ST("textKey"));
+	//if((content.indexOf("\n") == -1) &&
+	if (content.indexOf("\r") == -1)
+	{
+		this.oneLine = true;
+	}
+	else
+	{
+		this.oneLine = false;
+	}
+}
+
+TextNode.prototype.getTextFragments = function(descriptor)
+{
+	var textStyle = descriptor.getObjectValue(ST("textKey"));
     var content = textStyle.getString(ST("textKey"));
     var styleRangeList = textStyle.getList(ST("textStyleRange"));
 	var factor = 1;
@@ -58,12 +85,10 @@ TextNode.prototype.parseTextStyleRangeList = function(descriptor)
         textColor.rgb.blue = color.getInteger(ST("blue"));
         fragments.push({text:text, size:Math.round(size * factor), color:textColor.rgb.hexValue});
     }
-	this.oneLine = this.isOneLine(content, textStyle);
-	this.orientation = TS(textStyle.getEnumerationValue(ST("orientation")));
-	this.setTextFormat(fragments);
+    return fragments;
 }
 
-TextNode.prototype.setTextFormat = function(fragments)
+TextNode.prototype.parseTextFormat = function(fragments)
 {
 	var size = 0;
 	var text = String.empty;
@@ -76,7 +101,7 @@ TextNode.prototype.setTextFormat = function(fragments)
 		}
 		if(i == 0)
 		{
-			this.color = fragment.color;
+			this.color = fragment.color;//颜色叠加也可能改变color
 		}
 		if((fragment.color == this.color) || (fragments.length == 1))
 		{
@@ -91,13 +116,79 @@ TextNode.prototype.setTextFormat = function(fragments)
 	this.text = text;
 }
 
+TextNode.prototype.parseStokeEffect = function(descriptor)
+{
+	if (descriptor.getObjectValue(ST("layerEffects")).hasKey(ST("frameFX"))
+			&& descriptor.getObjectValue(ST("layerEffects")).getObjectValue(ST("frameFX")).getBoolean(ST("enabled")))
+    {
+	    var stroke = descriptor.getObjectValue(ST("layerEffects")).getObjectValue(ST("frameFX"));
+	    this.strokeSize = stroke.getUnitDoubleValue(ST("size"));
+	    this.strokeAlpha = stroke.getUnitDoubleValue(ST("opacity"));
+	    var strokeColor = stroke.getObjectValue(ST("color"));
+	    var color = new SolidColor();
+	    color.rgb.red = strokeColor.getInteger(ST("red"));
+	    color.rgb.green = strokeColor.getInteger(ST("green"));
+	    color.rgb.blue = strokeColor.getInteger(ST("blue"));
+	    this.strokeColor = color.rgb.hexValue;
+    }
+}
+
+TextNode.prototype.parseDropShadowEffect = function(descriptor)
+{
+	if (descriptor.getObjectValue(ST("layerEffects")).hasKey(ST("dropShadow"))
+			&& descriptor.getObjectValue(ST("layerEffects")).getObjectValue(ST("dropShadow")).getBoolean(ST("enabled")))
+	{
+	    var dropShadow = descriptor.getObjectValue(ST("layerEffects")).getObjectValue(ST("dropShadow"));
+	    this.dropShadowAlpha = dropShadow.getUnitDoubleValue(ST("opacity"));
+	    this.dropShadowAngle = dropShadow.getInteger(ST("localLightingAngle"));
+	    this.dropShadowDistance = dropShadow.getInteger(ST("distance"));
+	    var dropShadowColor = dropShadow.getObjectValue(ST("color"));
+	    var color = new SolidColor();
+	    color.rgb.red = dropShadowColor.getInteger(ST("red"));
+	    color.rgb.green = dropShadowColor.getInteger(ST("green"));
+	    color.rgb.blue = dropShadowColor.getInteger(ST("blue"));
+	    this.dropShadowColor = color.rgb.hexValue;
+	}
+}
+
+TextNode.prototype.parseSolidFillEffect = function(descriptor)
+{
+	if (descriptor.getObjectValue(ST("layerEffects")).hasKey(ST("solidFill"))
+			&& descriptor.getObjectValue(ST("layerEffects")).getObjectValue(ST("solidFill")).getBoolean(ST("enabled")))
+	{
+    	var solidFill = descriptor.getObjectValue(ST("layerEffects")).getObjectValue(ST("solidFill"));
+	    var solidFillColor = solidFill.getObjectValue(ST("color"));
+	    var color = new SolidColor();
+	    color.rgb.red = solidFillColor.getInteger(ST("red"));
+	    color.rgb.green = solidFillColor.getInteger(ST("green"));
+	    color.rgb.blue = solidFillColor.getInteger(ST("blue"));
+	    this.color = color.rgb.hexValue;
+	}
+}
+
 TextNode.prototype.addSpecifiedProperty = function(content)
 {
 	content += this.getJsonFormatProperty("Size", this.size, true);
-	content += this.getJsonFormatProperty("Color", "0x" + this.color, false);
+	content += this.getJsonFormatProperty("Color", this.color, false);
 	content += this.getJsonFormatProperty("Text", this.text, false);
 	content += this.getJsonFormatProperty("OneLine", this.oneLine ? 1 : 0, true);
 	content += this.getJsonFormatProperty("Orientation", this.orientation, false);
+
+	if(this.strokeSize != null)
+	{
+		content += this.getJsonFormatProperty("StrokeSize", this.strokeSize, true);
+		content += this.getJsonFormatProperty("StrokeAlpha", this.strokeAlpha, true);
+		content += this.getJsonFormatProperty("StrokeColor", this.strokeColor, false);
+	}
+
+	if(this.dropShadowAlpha != null)
+	{
+		content += this.getJsonFormatProperty("DropShadowAlpha", this.dropShadowAlpha, true);
+		content += this.getJsonFormatProperty("DropShadowAngle", this.dropShadowAngle, true);
+		content += this.getJsonFormatProperty("DropShadowDistance", this.dropShadowDistance, true);
+		content += this.getJsonFormatProperty("DropShadowColor", this.dropShadowColor, false);
+	}
+
 	if(this.param != null)
 	{
 		var paramStr = this.param.toLowerCase()
@@ -106,18 +197,8 @@ TextNode.prototype.addSpecifiedProperty = function(content)
 		{
 			var param = paramList[i];
 			if(param.startWith("linespacing")) content += this.getJsonFormatProperty("LineSpacing", param.substring(11, param.length), true);
-			//TODO leftmiddleright
+			if(param.startWith("align")) content += this.getJsonFormatProperty("Align", param.substring(5, param.length), false);
 		}
 	}
 	return content;
-}
-
-TextNode.prototype.isOneLine = function(content)
-{
-	//if((content.indexOf("\n") == -1) &&
-	if (content.indexOf("\r") == -1)
-	{
-		return true;
-	}
-	return false;
 }

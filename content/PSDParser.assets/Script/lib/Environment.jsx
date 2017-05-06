@@ -1,5 +1,11 @@
 #include "Base/BaseDefine.jsx";
 #include "Base/BaseClass.jsx";
+#include "Node/FontOffsetMap.jsx";
+#include "Node/NodeType.jsx";
+#include "Node/BaseNode.jsx";
+#include "Node/FolderNode.jsx";
+#include "Node/ImageNode.jsx";
+#include "Node/TextNode.jsx";
 #include "Tool/StringExtension.jsx";
 #include "Extractor.jsx";
 #include "FileWriter.jsx";

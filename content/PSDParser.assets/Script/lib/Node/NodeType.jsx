@@ -7,6 +7,7 @@ const TYPE_TOGGLE = "toggle";
 const TYPE_TOGGLE_GROUP = "togglegroup";
 const TYPE_SCROLL_VIEW = "scrollview";
 const TYPE_LIST = "list";
+const TYPE_SLIDER = "slider";
 
 const TypeMap = new Object();
 TypeMap[TYPE_IMAGE] = 1;
@@ -18,3 +19,4 @@ TypeMap[TYPE_TOGGLE] = 1;
 TypeMap[TYPE_TOGGLE_GROUP] = 1;
 TypeMap[TYPE_SCROLL_VIEW] = 1;
 TypeMap[TYPE_LIST] = 1;
+TypeMap[TYPE_SLIDER] = 1;
