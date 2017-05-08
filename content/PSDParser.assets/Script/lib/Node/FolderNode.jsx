@@ -8,26 +8,21 @@ FolderNode.prototype.calculateBounds = function()
 {
 	if(this.children.length == 0)
 	{
-		this.x = 0;
-		this.y = 0;
-		this.width = 0;
-		this.height = 0;
+        this.setBounds(0, 0, 0, 0);
 		return;
 	}
-    var left = Number.MAX_VALUE;
-    var top = Number.MAX_VALUE;
-    var right = Number.MIN_VALUE;
-    var bottom = Number.MIN_VALUE;
+    var left = Number.POSITIVE_INFINITY;
+    var top = Number.POSITIVE_INFINITY;
+    var right = Number.NEGATIVE_INFINITY;
+    var bottom = Number.NEGATIVE_INFINITY;
+
     for(var i = 0; i < this.children.length;i++)
     {
         var child = this.children[i];
-        //如果有子节点图片Attach，则大小按子节点图片大小来
+        //如果有子节点图片Attach，则大小与子节点大小相同
         if(child.haveAttachParam())
         {
-        	this.x = child.x;
-        	this.y = child.y;
-        	this.width = child.width;
-        	this.height = child.height;
+            this.setBounds(child.x, child.y, child.width, child.height);
         	return;
         }
         left = (left > child.x) ? child.x : left;
@@ -35,10 +30,7 @@ FolderNode.prototype.calculateBounds = function()
         right = (right < (child.width + child.x)) ? (child.width + child.x) : right
         bottom = (bottom < (child.height + child.y)) ? (child.height + child.y) : bottom;
     }
-    this.x = left;
-    this.y = top;
-    this.width = right - left;
-    this.height = bottom - top;
+    this.setBounds(left, top, right - left, bottom - top);
 }
 
 FolderNode.prototype.addSpecifiedProperty = function(content)

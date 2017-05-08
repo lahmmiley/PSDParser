@@ -14,15 +14,39 @@ TextNode.prototype.calculateBounds = function()
     var top = descBounds.getUnitDoubleValue(ST("top"));
     var right = descBounds.getUnitDoubleValue(ST("right"));
     var bottom = descBounds.getUnitDoubleValue(ST("bottom"));
+
     this.x = left;
-    this.y = top;
+    this.y = top;//1为误差字体误差
     this.width = right - left;
-	this.height = bottom - top + Math.round(PsdFontOffsetMap[this.size]);
+	//0.159为unity wqy两个字号的preferHeight之间的差值
+	//1为误差字体误差
+	this.height = bottom - top + Math.ceil(this.size * 0.159) + 1; 
+	if(this.stroke)
+	{
+	    //描边会改变字体高度，需要重新调整
+	    if(this.strokeSize == 1) 
+	    { 
+	    	this.height = this.height - 6; 
+	    	this.y += 3;
+	    }
+	    else if(this.strokeSize == 2) 
+	    { 
+	    	this.height = this.height - 9; 
+	    	this.y += 4;
+	    }
+	    else throw "暂不支持大于2的字体描边";
+	}
+	else if(this.dropShadow)
+	{
+	    //投影会改变字体高度，需要重新调整
+	    if(this.dropShadowDistance == 1) { this.height = this.height - 3; }
+	    else throw "暂不支持大于1的字体投影";
+	}
 }
 
 TextNode.prototype.parseTextStyleRangeList = function(descriptor)
 {
-	//new PropertyGetter().writeAllProperty(descriptor);
+	new PropertyGetter().writeAllProperty(descriptor);
 	this.parseOrientation(descriptor);
 	this.parseOneLine(descriptor);
 	var fragments = this.getTextFragments(descriptor);
@@ -101,7 +125,7 @@ TextNode.prototype.parseTextFormat = function(fragments)
 		}
 		if(i == 0)
 		{
-			this.color = fragment.color;//颜色叠加也可能改变color
+			this.color = fragment.color;//颜色叠加也会改变color
 		}
 		if((fragment.color == this.color) || (fragments.length == 1))
 		{
@@ -118,9 +142,12 @@ TextNode.prototype.parseTextFormat = function(fragments)
 
 TextNode.prototype.parseStokeEffect = function(descriptor)
 {
-	if (descriptor.getObjectValue(ST("layerEffects")).hasKey(ST("frameFX"))
-			&& descriptor.getObjectValue(ST("layerEffects")).getObjectValue(ST("frameFX")).getBoolean(ST("enabled")))
+    this.stroke = false;
+	if (descriptor.getBoolean(ST("layerFXVisible")) &&
+			descriptor.getObjectValue(ST("layerEffects")).hasKey(ST("frameFX")) &&
+			descriptor.getObjectValue(ST("layerEffects")).getObjectValue(ST("frameFX")).getBoolean(ST("enabled")))
     {
+    	this.stroke = true;
 	    var stroke = descriptor.getObjectValue(ST("layerEffects")).getObjectValue(ST("frameFX"));
 	    this.strokeSize = stroke.getUnitDoubleValue(ST("size"));
 	    this.strokeAlpha = stroke.getUnitDoubleValue(ST("opacity"));
@@ -135,9 +162,12 @@ TextNode.prototype.parseStokeEffect = function(descriptor)
 
 TextNode.prototype.parseDropShadowEffect = function(descriptor)
 {
-	if (descriptor.getObjectValue(ST("layerEffects")).hasKey(ST("dropShadow"))
-			&& descriptor.getObjectValue(ST("layerEffects")).getObjectValue(ST("dropShadow")).getBoolean(ST("enabled")))
+	this.dropShadow = false;
+	if (descriptor.getBoolean(ST("layerFXVisible")) &&
+			descriptor.getObjectValue(ST("layerEffects")).hasKey(ST("dropShadow")) &&
+			descriptor.getObjectValue(ST("layerEffects")).getObjectValue(ST("dropShadow")).getBoolean(ST("enabled")))
 	{
+		this.dropShadow = true;
 	    var dropShadow = descriptor.getObjectValue(ST("layerEffects")).getObjectValue(ST("dropShadow"));
 	    this.dropShadowAlpha = dropShadow.getUnitDoubleValue(ST("opacity"));
 	    this.dropShadowAngle = dropShadow.getInteger(ST("localLightingAngle"));
@@ -153,8 +183,9 @@ TextNode.prototype.parseDropShadowEffect = function(descriptor)
 
 TextNode.prototype.parseSolidFillEffect = function(descriptor)
 {
-	if (descriptor.getObjectValue(ST("layerEffects")).hasKey(ST("solidFill"))
-			&& descriptor.getObjectValue(ST("layerEffects")).getObjectValue(ST("solidFill")).getBoolean(ST("enabled")))
+	if (descriptor.getBoolean(ST("layerFXVisible")) &&
+			descriptor.getObjectValue(ST("layerEffects")).hasKey(ST("solidFill")) &&
+			descriptor.getObjectValue(ST("layerEffects")).getObjectValue(ST("solidFill")).getBoolean(ST("enabled")))
 	{
     	var solidFill = descriptor.getObjectValue(ST("layerEffects")).getObjectValue(ST("solidFill"));
 	    var solidFillColor = solidFill.getObjectValue(ST("color"));
@@ -174,14 +205,14 @@ TextNode.prototype.addSpecifiedProperty = function(content)
 	content += this.getJsonFormatProperty("OneLine", this.oneLine ? 1 : 0, true);
 	content += this.getJsonFormatProperty("Orientation", this.orientation, false);
 
-	if(this.strokeSize != null)
+	if(this.stroke)
 	{
 		content += this.getJsonFormatProperty("StrokeSize", this.strokeSize, true);
 		content += this.getJsonFormatProperty("StrokeAlpha", this.strokeAlpha, true);
 		content += this.getJsonFormatProperty("StrokeColor", this.strokeColor, false);
 	}
 
-	if(this.dropShadowAlpha != null)
+	if(this.dropShadow)
 	{
 		content += this.getJsonFormatProperty("DropShadowAlpha", this.dropShadowAlpha, true);
 		content += this.getJsonFormatProperty("DropShadowAngle", this.dropShadowAngle, true);

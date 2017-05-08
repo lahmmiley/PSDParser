@@ -1,5 +1,5 @@
-const DUMMY_TOKEN_LIST = [/\#/g, / /g, /副本 \d*/g, /副本\d*/g, /拷贝 \d*/g, /拷贝\d*/g, /copy\d*/g];
-// /\./g, 
+const DUMMY_TOKEN_LIST = [/\#/g, /副本 \d*/g, /副本\d*/g, /拷贝 \d*/g, /拷贝\d*/g, /copy\d*/g];
+// /\./g, / /g, 
 
 function BaseNode()
 {
@@ -177,4 +177,12 @@ BaseNode.prototype.namedType = function(tokenList)
 		return true;
 	}
 	return false
+}
+
+BaseNode.prototype.setBounds = function(x, y, width, height)
+{
+	this.x = x;
+	this.y = y;
+	this.width = width;
+	this.height = height;
 }
