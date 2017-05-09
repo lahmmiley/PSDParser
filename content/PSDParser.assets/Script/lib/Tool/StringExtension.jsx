@@ -36,4 +36,14 @@ String.prototype.format = function(args) {
 	    }
 	}
 	return result;
-}  
+}
+
+String.prototype.trim = function()
+{
+    return this.replace(/(^\s*)|(\s*$)/g, String.empty);
+}
+
+String.prototype.removeBlank = function()
+{
+    return this.replace(/\s/g, String.empty);
+}

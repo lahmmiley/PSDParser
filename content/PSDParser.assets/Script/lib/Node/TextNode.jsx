@@ -1,3 +1,5 @@
+const NUMBER_REG = /[^0-9 +-\/%\*]/;
+
 function TextNode(descriptor)
 {
 	this.type = TYPE_TEXT;
@@ -15,33 +17,25 @@ TextNode.prototype.calculateBounds = function()
     var right = descBounds.getUnitDoubleValue(ST("right"));
     var bottom = descBounds.getUnitDoubleValue(ST("bottom"));
 
-    this.x = left;
-    this.y = top;//1为误差字体误差
+    this.x = left + 1;
+    this.y = top;
     this.width = right - left;
-	//0.159为unity wqy两个字号的preferHeight之间的差值
-	//1为误差字体误差
-	this.height = bottom - top + Math.ceil(this.size * 0.159) + 1; 
-	if(this.stroke)
-	{
-	    //描边会改变字体高度，需要重新调整
-	    if(this.strokeSize == 1) 
-	    { 
-	    	this.height = this.height - 6; 
-	    	this.y += 3;
-	    }
-	    else if(this.strokeSize == 2) 
-	    { 
-	    	this.height = this.height - 9; 
-	    	this.y += 4;
-	    }
-	    else throw "暂不支持大于2的字体描边";
-	}
-	else if(this.dropShadow)
-	{
-	    //投影会改变字体高度，需要重新调整
-	    if(this.dropShadowDistance == 1) { this.height = this.height - 3; }
-	    else throw "暂不支持大于1的字体投影";
-	}
+    if(this.oneLine && this.orientation == "horizontal")
+    {
+        //1.159为unity wqy两个字号的preferHeight之间的差值  1为误差
+        this.height = Math.ceil(this.size * 1.159);
+        if(!NUMBER_REG.test(this.text)) //纯数字
+        {
+            var offset = 1;
+            if(this.size >= 16) offset +=1;
+            this.y = this.y - offset;
+        }
+        this.oneLineAdjustBoundByEffect();
+    }
+    else
+    {
+        this.height = bottom - top + Math.ceil(this.size * 0.159);
+    }
 }
 
 TextNode.prototype.parseTextStyleRangeList = function(descriptor)
@@ -232,4 +226,21 @@ TextNode.prototype.addSpecifiedProperty = function(content)
 		}
 	}
 	return content;
+}
+
+TextNode.prototype.oneLineAdjustBoundByEffect = function()
+{
+    if(this.stroke)
+    {
+        //描边会改变字体高度，需要重新调整
+        if(this.strokeSize == 1) 
+        {
+            this.y += 2;
+        }
+        else if(this.strokeSize == 2) 
+        {
+            this.y += 4;
+        }
+        else throw "暂不支持大于2的字体描边";
+    }
 }

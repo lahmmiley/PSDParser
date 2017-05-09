@@ -44,27 +44,27 @@ BaseNode.prototype.setParam = function(layerName)
 	var tokenList = layerName.split("|");
 	if(this.type != null)
 	{
-		this.name = tokenList[0];
+		this.setName(tokenList[0]);
 	}
 	else
 	{
 		if(this.namedType(tokenList))
 		{
-			this.type = tokenList[0].toLowerCase();
-			this.name = tokenList[1];
+			this.type = tokenList[0].removeBlank().toLowerCase();
+			this.setName(tokenList[1]);
 			var hasType = TypeMap.hasOwnProperty(this.type);
 			if(!hasType) alert("不存在类型" + this.type);
 		}
 		else
 		{
 			this.type = TYPE_CONTAINER;
-			this.name = tokenList[0];
+			this.setName(tokenList[0]);
 		}
 	}
 	
 	for(var i = 1; i < tokenList.length; i++)
 	{
-		var token = tokenList[i];
+		var token = tokenList[i].removeBlank();
 		if(token.startWith("@"))
 		{
 			if(this.param == null) { this.param = String.empty }
@@ -185,4 +185,9 @@ BaseNode.prototype.setBounds = function(x, y, width, height)
 	this.y = y;
 	this.width = width;
 	this.height = height;
+}
+
+BaseNode.prototype.setName = function(name)
+{
+	this.name = name.trim()
 }
