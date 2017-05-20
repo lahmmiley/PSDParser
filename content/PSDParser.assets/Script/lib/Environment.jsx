@@ -1,6 +1,5 @@
 #include "Base/BaseDefine.jsx";
 #include "Base/BaseClass.jsx";
-#include "Node/FontOffsetMap.jsx";
 #include "Node/NodeType.jsx";
 #include "Node/BaseNode.jsx";
 #include "Node/FolderNode.jsx";
@@ -11,6 +10,7 @@
 #include "FileWriter.jsx";
 #include "ImageExporter.jsx";
 #include "PropertyGetter.jsx";
+#include "ParameterVerify.jsx";
 
 function Environment(doc)
 {

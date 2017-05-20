@@ -40,7 +40,7 @@ TextNode.prototype.calculateBounds = function()
 
 TextNode.prototype.parseTextStyleRangeList = function(descriptor)
 {
-	new PropertyGetter().writeAllProperty(descriptor);
+	//new PropertyGetter().writeAllProperty(descriptor);
 	this.parseOrientation(descriptor);
 	this.parseOneLine(descriptor);
 	var fragments = this.getTextFragments(descriptor);
@@ -221,8 +221,8 @@ TextNode.prototype.addSpecifiedProperty = function(content)
 		for(var i = 0; i < paramList.length; i++)
 		{
 			var param = paramList[i];
-			if(param.startWith("linespacing")) content += this.getJsonFormatProperty("LineSpacing", param.substring(11, param.length), true);
-			if(param.startWith("align")) content += this.getJsonFormatProperty("Align", param.substring(5, param.length), false);
+			if(param.startWith(PARAMETER_LINESPACING)) content += this.getJsonFormatProperty("LineSpacing", param.substring(PARAMETER_LINESPACING.length, param.length), true);
+			if(param.startWith(PARAMETER_ALIGN)) content += this.getJsonFormatProperty("Align", param.substring(PARAMETER_ALIGN.length, param.length), false);
 		}
 	}
 	return content;

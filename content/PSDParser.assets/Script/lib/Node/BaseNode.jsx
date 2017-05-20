@@ -1,10 +1,9 @@
-const DUMMY_TOKEN_LIST = [/\#/g, /副本 \d*/g, /副本\d*/g, /拷贝 \d*/g, /拷贝\d*/g, /copy\d*/g];
-// /\./g, / /g, 
+const DUMMY_TOKEN_LIST = [/\#/g, /副本 \d*/g, /副本\d*/g, /拷贝 \d*/g, /拷贝\d*/g, /copy\d*/g];// /\./g, / /g, 
 
 function BaseNode()
 {
     this.descriptor = arguments[0];
-    this.parent = null;
+    this.parent = arguments[1];
     this.children = [];
     this.layerIndex = -1;
     this.x = 0;
@@ -21,7 +20,7 @@ BaseNode.prototype.parseLayerName = function()
 {
     if(this.descriptor == null)
     {
-        this.name = "root";
+        this.name = ROOT_NAME;
         this.type = TYPE_CONTAINER;
     }
     else
@@ -31,10 +30,8 @@ BaseNode.prototype.parseLayerName = function()
 		{
 			layerName = layerName.replace(DUMMY_TOKEN_LIST[i], String.empty);
 		}
-		if(layerName.containChinese())
-		{
-			throw layerName + " 包含中文!"
-		}
+
+	    new ParameterVerify().verifyChinese(this, layerName);
 		this.setParam(layerName);
     }
 }
@@ -130,7 +127,7 @@ BaseNode.prototype.addBaseProperty = function(content)
 		for(var i = 0; i < paramList.length; i++)
 		{
 			var param = paramList[i];
-			if(param.startWith("attach")) content += this.getJsonFormatProperty("Attach", 1, true);
+			if(param.startWith(PARAMETER_ATTACH)) content += this.getJsonFormatProperty("Attach", 1, true);
 		}
 	}
 	return content;
@@ -143,17 +140,14 @@ BaseNode.prototype.addSpecifiedProperty = function(content)
 
 BaseNode.prototype.getJsonFormatProperty = function(propertyName, propertyValue, isNumber)
 {
-	var result = "\"" + propertyName + "\":";
 	if(isNumber)
-	{
-		result += propertyValue;
-	}
-	else
-	{
-		result += "\"" + propertyValue + "\"";
-	}
-	result +=  ", ";
-	return result;
+    {
+        return "\"{0}\":{1}, ".format(propertyName, propertyValue);
+    }
+    else
+    {
+        return "\"{0}\":\"{1}\", ".format(propertyName, propertyValue);
+    }
 }
 
 BaseNode.prototype.haveAttachParam = function()
@@ -163,7 +157,7 @@ BaseNode.prototype.haveAttachParam = function()
 		return false;
 	}
 	var paramStr = this.param.toLowerCase()
-	if(paramStr.indexOf("attach") != -1)
+	if(paramStr.indexOf(PARAMETER_ATTACH) != -1)
 	{
 		return true;
 	}
@@ -190,4 +184,17 @@ BaseNode.prototype.setBounds = function(x, y, width, height)
 BaseNode.prototype.setName = function(name)
 {
 	this.name = name.trim()
+}
+
+BaseNode.prototype.getFullPath = function()
+{
+    var path = String.empty;
+    var node = this.parent;
+    while(node.name != ROOT_NAME)
+    {
+        path = node.name + "/" + path;
+        node = node.parent;
+    }
+    path = path + this.name;
+    return path;
 }

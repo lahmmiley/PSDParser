@@ -9,7 +9,7 @@ function Extractor(env)
 Extractor.prototype.extract = function()
 {
     var layerCount = this.getLayerCount();
-    var root = new FolderNode(null);
+    var root = new FolderNode(null, null);
     var currentNode = root;
     for(var i = layerCount; i > 0; i--)
     {
@@ -45,8 +45,7 @@ Extractor.prototype.extract = function()
 
 Extractor.prototype.dealLayerSectionStart = function(descriptor, currentNode)
 {
-    var node = new FolderNode(descriptor);
-    node.parent = currentNode;
+    var node = new FolderNode(descriptor, currentNode);
     currentNode.children.push(node);
     return node;
 }
@@ -55,16 +54,15 @@ Extractor.prototype.dealLayerSectionContent = function(descriptor, currentNode, 
 {
     if(this.isTextLayer(descriptor))
     {
-        node = new TextNode(descriptor);
+        node = new TextNode(descriptor, currentNode);
 		node.parseTextStyleRangeList(descriptor);
     }
     else
     {
-        node = new ImageNode(descriptor);
+        node = new ImageNode(descriptor, currentNode);
 		node.setFragments(descriptor, index, this.env.commonAssetMap, this.env.name);
     }
     node.calculateBounds();
-    node.parent = currentNode;
     currentNode.children.push(node);
 }
 
