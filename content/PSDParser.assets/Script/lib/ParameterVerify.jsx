@@ -52,6 +52,7 @@ ParameterVerify.prototype.traverseTree = function(node)
 ParameterVerify.prototype.verifyNode = function(node)
 {
     this.verifyName(node);
+    this.verifyType(node);
     this.verifyParamType(node);
     var param = node.param;
     if(param != null)
@@ -85,6 +86,15 @@ ParameterVerify.prototype.verifyName = function(node)
     else if(name.indexOf('，') != -1)
     {
         this.appendErrorMsg(node.getFullPath(), "命名错误 name:{0} 包含'，' 请改为英文逗号','".format(name));
+    }
+}
+
+ParameterVerify.prototype.verifyType = function(node)
+{
+    var typeStr = node.type;
+    if(!TypeMap.hasOwnProperty(typeStr))
+    {
+        this.appendErrorMsg(node.getFullPath(), "类型错误 不存在类型type:{0}".format(typeStr));
     }
 }
 

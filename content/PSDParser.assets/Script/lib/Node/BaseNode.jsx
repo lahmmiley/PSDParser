@@ -49,8 +49,6 @@ BaseNode.prototype.setParam = function(layerName)
 		{
 			this.type = tokenList[0].removeBlank().toLowerCase();
 			this.setName(tokenList[1]);
-			var hasType = TypeMap.hasOwnProperty(this.type);
-			if(!hasType) alert("不存在类型" + this.type);
 		}
 		else
 		{

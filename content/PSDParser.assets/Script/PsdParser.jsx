@@ -1,6 +1,19 @@
-﻿#include "lib/Environment.jsx";
+﻿#include "lib/Base/BaseDefine.jsx";
+#include "lib/Base/BaseClass.jsx";
+#include "lib/Node/NodeType.jsx";
+#include "lib/Node/BaseNode.jsx";
+#include "lib/Node/FolderNode.jsx";
+#include "lib/Node/ImageNode.jsx";
+#include "lib/Node/TextNode.jsx";
+#include "lib/Tool/StringExtension.jsx";
+#include "lib/Extractor.jsx";
+#include "lib/FileWriter.jsx";
+#include "lib/ImageExporter.jsx";
+#include "lib/PropertyGetter.jsx";
+#include "lib/ParameterVerify.jsx";
+#include "lib/Environment.jsx";
 
-function main()
+function main(exportImage)
 {
 	if(app.documents.length == 0)
     {
@@ -14,8 +27,9 @@ function main()
     {
         var path = env.dataFolderPath + env.name + JSON_POSTFIX;
         new FileWriter(env).write(path, root.toJson(0, true));
-        new ImageExporter(env).export(root);
+        if(exportImage)
+        {
+            new ImageExporter(env).export(root);
+        }
     }
 }
-
-main();
