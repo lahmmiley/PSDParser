@@ -42,8 +42,15 @@ FolderNode.prototype.addSpecifiedProperty = function(content)
 		for(var i = 0; i < paramList.length; i++)
 		{
 			var param = paramList[i];
-			if(param.startWith("prefab")) content += this.getJsonFormatProperty("Prefab", 1, true);
-			if(param.startWith("window")) content += this.getJsonFormatProperty("Window", 1, true);
+            if(param.startWith(PARAMETER_SCALE))
+            {
+                var scale = param.substring(PARAMETER_SCALE.length, param.length);
+                if(scale == String.empty) scale = 1.1;//默认缩放
+                content += this.getJsonFormatProperty("Scale", scale, true);
+            }
+            else if(param.startWith(PARAMETER_COLOR_TINT)) content += this.getJsonFormatProperty("ColorTint", 1, true);
+			//if(param.startWith("prefab")) content += this.getJsonFormatProperty("Prefab", 1, true);
+			//if(param.startWith("window")) content += this.getJsonFormatProperty("Window", 1, true);
 		}
 	}
 	return content;

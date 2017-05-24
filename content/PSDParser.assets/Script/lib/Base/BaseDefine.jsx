@@ -8,17 +8,36 @@ const PNG_POSTFIX = ".png";
 const FAILURE = 0;
 const SUCCESS = 1;
 
-const PARAMETER_SLICE = "slice";
-const PARAMETER_ALIGN = "align";
+//通用参数
 const PARAMETER_ATTACH = "attach";
+const PARAMETER_HIDE = "hide";
+const PARAMETER_MASK = "mask";
+const PARAMETER_CANVAS = "canvas";
+
+//图片参数
+const PARAMETER_SLICE = "slice";
+
+//文本参数
+const PARAMETER_ALIGN = "align";
 const PARAMETER_LINESPACING = "linespacing";
 
+//按钮参数
+const PARAMETER_SCALE = "scale";
+const PARAMETER_COLOR_TINT = "colortint";
+
 const ParameterMap = new Object();
-ParameterMap[PARAMETER_SLICE] = PARAMETER_SLICE;
-ParameterMap[PARAMETER_ALIGN] = PARAMETER_ALIGN;
 ParameterMap[PARAMETER_ATTACH] = PARAMETER_ATTACH;
+ParameterMap[PARAMETER_MASK] = PARAMETER_MASK;
+ParameterMap[PARAMETER_HIDE] = PARAMETER_HIDE;
+ParameterMap[PARAMETER_CANVAS] = PARAMETER_CANVAS;
+
+ParameterMap[PARAMETER_SLICE] = PARAMETER_SLICE;
+
+ParameterMap[PARAMETER_ALIGN] = PARAMETER_ALIGN;
 ParameterMap[PARAMETER_LINESPACING] = PARAMETER_LINESPACING;
 
+ParameterMap[PARAMETER_SCALE] = PARAMETER_SCALE;
+ParameterMap[PARAMETER_COLOR_TINT] = PARAMETER_COLOR_TINT;
 
 const AlignMap = new Object();
 AlignMap["lowercenter"] = 1;

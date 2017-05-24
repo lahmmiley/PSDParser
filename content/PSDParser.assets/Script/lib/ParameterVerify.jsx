@@ -64,6 +64,10 @@ ParameterVerify.prototype.verifyNode = function(node)
 			var param = paramList[i];
 			if(param.startWith(PARAMETER_SLICE)) this.verifySlice(node, param);
 			if(param.startWith(PARAMETER_ALIGN)) this.verifyAlign(node, param);
+			if(param.startWith(PARAMETER_SCALE)) this.verifyScale(node, param);
+			if(param.startWith(PARAMETER_COLOR_TINT)) this.verifyColorTint(node, param);
+			if(param.startWith(PARAMETER_LINESPACING)) this.verifyLinespacing(node, param);
+			if(param.startWith(PARAMETER_CANVAS)) this.verifyCanvas(node, param);
 		}
 	}
 }
@@ -132,6 +136,10 @@ ParameterVerify.prototype.parameterExist = function(param)
 
 ParameterVerify.prototype.verifySlice = function(node, param)
 {
+    if(node.type != TYPE_IMAGE)
+    {
+        this.appendErrorMsg(node.getFullPath(), "slice参数错误 只能在image类型后面添加slice参数");
+    }
     var sliceArray = param.substring(PARAMETER_SLICE.length, param.length).split(",");
     if(sliceArray.length != 4)
     {
@@ -162,10 +170,67 @@ ParameterVerify.prototype.verifySlice = function(node, param)
 
 ParameterVerify.prototype.verifyAlign = function(node, param)
 {
+    if(node.type != TYPE_TEXT)
+    {
+        this.appendErrorMsg(node.getFullPath(), "align参数错误 只能在text类型后面添加align参数");
+    }
     var align = param.substring(PARAMETER_ALIGN.length, param.length);
     var exist = AlignMap.hasOwnProperty(align);
     if(!exist)
     {
         this.appendErrorMsg(node.getFullPath(), "align参数错误 不存在参数{0}".format(align));
     }
+}
+
+ParameterVerify.prototype.verifyScale = function(node, param)
+{
+    var scale = param.substring(PARAMETER_SCALE.length, param.length);
+    if((node.type != TYPE_BUTTON) && (node.type != TYPE_ENTER_EXIT_BUTTON))
+    {
+        this.appendErrorMsg(node.getFullPath(), "scale参数错误 只能在button类型后面添加scale参数");
+    }
+    if(scale != String.empty && !this.isNumber(scale))
+    {
+        this.appendErrorMsg(node.getFullPath(), "scale参数错误 参数:{0} 不是数字".format(scale));
+    }
+}
+
+ParameterVerify.prototype.verifyColorTint = function(node, param)
+{
+    if((node.type != TYPE_BUTTON) && (node.type != TYPE_ENTER_EXIT_BUTTON))
+    {
+        this.appendErrorMsg(node.getFullPath(), "colorTint参数错误 只能在button类型后面添加colorTint参数");
+    }
+}
+
+ParameterVerify.prototype.verifyLinespacing = function(node, param)
+{
+    var lineSpacing = param.substring(PARAMETER_LINESPACING.length, param.length);
+    if(node.type != TYPE_TEXT)
+    {
+        this.appendErrorMsg(node.getFullPath(), "lineSpacing参数错误 只能在text类型后面添加lineSpacing参数");
+    }
+    if(!this.isNumber(lineSpacing))
+    {
+        this.appendErrorMsg(node.getFullPath(), "lineSpacing参数错误 参数:{0} 不是数字".format(lineSpacing));
+    }
+}
+
+ParameterVerify.prototype.verifyCanvas= function(node, param)
+{
+    var sortOrder = param.substring(PARAMETER_CANVAS.length, param.length);
+    if(!this.isNumber(sortOrder))
+    {
+        this.appendErrorMsg(node.getFullPath(), "sortOrder参数错误 参数:{0} 不是数字".format(sortOrder));
+    }
+}
+
+ParameterVerify.prototype.isNumber = function(str)
+{
+    var reg = /^[0-9]+.?[0-9]*$/;
+    if(reg.test(str))
+    {
+        return true;
+    }
+    return false;
 }
