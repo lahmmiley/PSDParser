@@ -216,7 +216,7 @@ ParameterVerify.prototype.verifyLinespacing = function(node, param)
     }
 }
 
-ParameterVerify.prototype.verifyCanvas= function(node, param)
+ParameterVerify.prototype.verifyCanvas = function(node, param)
 {
     var sortOrder = param.substring(PARAMETER_CANVAS.length, param.length);
     if(!this.isNumber(sortOrder))

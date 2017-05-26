@@ -128,7 +128,7 @@ BaseNode.prototype.addBaseProperty = function(content)
 			if(param.startWith(PARAMETER_ATTACH)) content += this.getJsonFormatProperty("Attach", 1, true);
 			if(param.startWith(PARAMETER_HIDE)) content += this.getJsonFormatProperty("Hide", 1, true);
 			if(param.startWith(PARAMETER_MASK)) content += this.getJsonFormatProperty("Mask", 1, true);
-			if(param.startWith(PARAMETER_CANVAS)) content += this.getJsonFormatProperty("Canvas", 1, true);
+			if(param.startWith(PARAMETER_CANVAS)) content += this.getJsonFormatProperty("Canvas", param.substring(PARAMETER_CANVAS.length, param.length), true);
 		}
 	}
 	return content;
