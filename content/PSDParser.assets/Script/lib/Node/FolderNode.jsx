@@ -49,8 +49,8 @@ FolderNode.prototype.addSpecifiedProperty = function(content)
                 content += this.getJsonFormatProperty("Scale", scale, true);
             }
             else if(param.startWith(PARAMETER_COLOR_TINT)) content += this.getJsonFormatProperty("ColorTint", 1, true);
-			//if(param.startWith("prefab")) content += this.getJsonFormatProperty("Prefab", 1, true);
-			//if(param.startWith("window")) content += this.getJsonFormatProperty("Window", 1, true);
+            else if(param.startWith(PARAMETER_DIRECTION)) content += this.getJsonFormatProperty("Direction", param.substring(PARAMETER_DIRECTION.length, param.length), false);
+            else if(param.startWith(PARAMETER_CANVAS)) content += this.getJsonFormatProperty("Canvas", param.substring(PARAMETER_CANVAS.length, param.length), true);
 		}
 	}
 	return content;

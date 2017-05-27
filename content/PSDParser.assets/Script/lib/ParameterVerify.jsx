@@ -68,6 +68,7 @@ ParameterVerify.prototype.verifyNode = function(node)
 			if(param.startWith(PARAMETER_COLOR_TINT)) this.verifyColorTint(node, param);
 			if(param.startWith(PARAMETER_LINESPACING)) this.verifyLinespacing(node, param);
 			if(param.startWith(PARAMETER_CANVAS)) this.verifyCanvas(node, param);
+			if(param.startWith(PARAMETER_DIRECTION)) this.verifyDirection(node, param);
 		}
 	}
 }
@@ -218,10 +219,28 @@ ParameterVerify.prototype.verifyLinespacing = function(node, param)
 
 ParameterVerify.prototype.verifyCanvas = function(node, param)
 {
+    if(node.type != TYPE_CANVAS)
+    {
+        this.appendErrorMsg(node.getFullPath(), "canvas参数错误 只能在canvas类型后面添加direction参数");
+    }
     var sortOrder = param.substring(PARAMETER_CANVAS.length, param.length);
     if(!this.isNumber(sortOrder))
     {
         this.appendErrorMsg(node.getFullPath(), "sortOrder参数错误 参数:{0} 不是数字".format(sortOrder));
+    }
+}
+
+ParameterVerify.prototype.verifyDirection = function(node, param)
+{
+    if(node.type != TYPE_SCROLL_RECT)
+    {
+        this.appendErrorMsg(node.getFullPath(), "direction参数错误 只能Scroll类型后面添加direction参数");
+    }
+    var direction = param.substring(PARAMETER_DIRECTION.length, param.length);
+    var exist = DirectionMap.hasOwnProperty(direction);
+    if(!exist)
+    {
+        this.appendErrorMsg(node.getFullPath(), "direction参数错误 不存在参数{0}".format(direction));
     }
 }
 

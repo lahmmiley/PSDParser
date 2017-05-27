@@ -126,9 +126,9 @@ BaseNode.prototype.addBaseProperty = function(content)
 		{
 			var param = paramList[i];
 			if(param.startWith(PARAMETER_ATTACH)) content += this.getJsonFormatProperty("Attach", 1, true);
-			if(param.startWith(PARAMETER_HIDE)) content += this.getJsonFormatProperty("Hide", 1, true);
-			if(param.startWith(PARAMETER_MASK)) content += this.getJsonFormatProperty("Mask", 1, true);
-			if(param.startWith(PARAMETER_CANVAS)) content += this.getJsonFormatProperty("Canvas", param.substring(PARAMETER_CANVAS.length, param.length), true);
+            else if(param.startWith(PARAMETER_HIDE)) content += this.getJsonFormatProperty("Hide", 1, true);
+            else if(param.startWith(PARAMETER_MASK)) content += this.getJsonFormatProperty("Mask", 1, true);
+            else if(param.startWith(PARAMETER_CANVAS)) content += this.getJsonFormatProperty("Canvas", param.substring(PARAMETER_CANVAS.length, param.length), true);
 		}
 	}
 	return content;
