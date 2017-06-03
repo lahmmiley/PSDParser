@@ -11,6 +11,7 @@ const TYPE_LIST = "list";
 const TYPE_SLIDER = "slider";
 const TYPE_INPUT = "input";
 const TYPE_ENTER_EXIT_BUTTON = "enterexitbutton";
+const TYPE_CUSTOM_BUTTON = "custombutton";
 const TYPE_SCROLL_RECT = "scrollrect";
 const TYPE_DEFAULT_SCROLL_BAR = "defaultscrollbar";
 
@@ -28,5 +29,6 @@ TypeMap[TYPE_LIST] = 1;
 TypeMap[TYPE_SLIDER] = 1;
 TypeMap[TYPE_INPUT] = 1;
 TypeMap[TYPE_ENTER_EXIT_BUTTON] = 1;
+TypeMap[TYPE_CUSTOM_BUTTON] = 1;
 TypeMap[TYPE_SCROLL_RECT] = 1;
 TypeMap[TYPE_DEFAULT_SCROLL_BAR] = 1;

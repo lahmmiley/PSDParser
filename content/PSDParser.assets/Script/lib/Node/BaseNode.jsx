@@ -198,3 +198,14 @@ BaseNode.prototype.getFullPath = function()
     path = path + this.name;
     return path;
 }
+
+BaseNode.prototype.isButton = function()
+{
+    if((this.type == TYPE_BUTTON) ||
+        (this.type == TYPE_ENTER_EXIT_BUTTON) ||
+        (this.type == TYPE_CUSTOM_BUTTON))
+    {
+        return true;
+    }
+    return false;
+}

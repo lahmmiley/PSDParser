@@ -63,12 +63,13 @@ ParameterVerify.prototype.verifyNode = function(node)
 		{
 			var param = paramList[i];
 			if(param.startWith(PARAMETER_SLICE)) this.verifySlice(node, param);
-			if(param.startWith(PARAMETER_ALIGN)) this.verifyAlign(node, param);
-			if(param.startWith(PARAMETER_SCALE)) this.verifyScale(node, param);
-			if(param.startWith(PARAMETER_COLOR_TINT)) this.verifyColorTint(node, param);
-			if(param.startWith(PARAMETER_LINESPACING)) this.verifyLinespacing(node, param);
-			if(param.startWith(PARAMETER_CANVAS)) this.verifyCanvas(node, param);
-			if(param.startWith(PARAMETER_DIRECTION)) this.verifyDirection(node, param);
+            else if(param.startWith(PARAMETER_ALIGN)) this.verifyAlign(node, param);
+			else if(param.startWith(PARAMETER_SCALE)) this.verifyScale(node, param);
+			else if(param.startWith(PARAMETER_COLOR_TINT)) this.verifyColorTint(node, param);
+			else if(param.startWith(PARAMETER_LINESPACING)) this.verifyLinespacing(node, param);
+			else if(param.startWith(PARAMETER_CANVAS)) this.verifyCanvas(node, param);
+			else if(param.startWith(PARAMETER_DIRECTION)) this.verifyDirection(node, param);
+			else if(param.startWith(PARAMETER_MASK)) this.verifyMask(node, param);
 		}
 	}
 }
@@ -161,7 +162,7 @@ ParameterVerify.prototype.verifySlice = function(node, param)
     }
     if(node.height <= bottom + top)
     {
-        this.appendErrorMsg(node.getFullPath(), "slice参数错误 top:{0} bottom:{1} width:{2} 图片高度小于九切片参数(top + bottom)".format(top, bottom, node.height))
+        this.appendErrorMsg(node.getFullPath(), "slice参数错误 top:{0} bottom:{1} height:{2} 图片高度小于九切片参数(top + bottom)".format(top, bottom, node.height))
     }
     if(node.width <= left + right)
     {
@@ -186,7 +187,7 @@ ParameterVerify.prototype.verifyAlign = function(node, param)
 ParameterVerify.prototype.verifyScale = function(node, param)
 {
     var scale = param.substring(PARAMETER_SCALE.length, param.length);
-    if((node.type != TYPE_BUTTON) && (node.type != TYPE_ENTER_EXIT_BUTTON))
+    if(!node.isButton())
     {
         this.appendErrorMsg(node.getFullPath(), "scale参数错误 只能在button类型后面添加scale参数");
     }
@@ -198,7 +199,7 @@ ParameterVerify.prototype.verifyScale = function(node, param)
 
 ParameterVerify.prototype.verifyColorTint = function(node, param)
 {
-    if((node.type != TYPE_BUTTON) && (node.type != TYPE_ENTER_EXIT_BUTTON))
+    if(!node.isButton())
     {
         this.appendErrorMsg(node.getFullPath(), "colorTint参数错误 只能在button类型后面添加colorTint参数");
     }
@@ -241,6 +242,26 @@ ParameterVerify.prototype.verifyDirection = function(node, param)
     if(!exist)
     {
         this.appendErrorMsg(node.getFullPath(), "direction参数错误 不存在参数{0}".format(direction));
+    }
+}
+
+ParameterVerify.prototype.verifyMask = function(node, param)
+{
+    var children = node.children;
+    var haveImageAttach = false;
+    for(var i = 0; i < children.length; i++)
+    {
+        var child = children[i];
+        if((child.type == TYPE_IMAGE) && (child.haveAttachParam()))
+        {
+            haveImageAttach = true;
+            break;
+        }
+    }
+
+    if(!haveImageAttach)
+    {
+        this.appendErrorMsg(node.getFullPath(), "mask参数错误 mask参数下面的子节点必须有image的attach");
     }
 }
 
