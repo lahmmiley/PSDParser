@@ -243,4 +243,12 @@ TextNode.prototype.oneLineAdjustBoundByEffect = function()
         }
         else throw "暂不支持大于2的字体描边";
     }
+    if(this.dropShadow)
+    {
+        if(this.dropShadowDistance == 1)
+        {
+            this.width -= 5;//不修改的话，字体居中会因为宽度而显示有问题
+        }
+        else throw "暂不支持大于2的字体投影";
+    }
 }
