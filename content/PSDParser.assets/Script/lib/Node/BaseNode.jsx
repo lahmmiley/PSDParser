@@ -164,6 +164,26 @@ BaseNode.prototype.haveAttachParam = function()
 	return false;
 }
 
+BaseNode.prototype.getLinespacing = function()
+{
+    var linespacing = 1;
+	if(this.param != null)
+	{
+		var paramStr = this.param.toLowerCase()
+		var paramList = paramStr.split(" ");
+		for(var i = 0; i < paramList.length; i++)
+		{
+			var param = paramList[i];
+			if(param.startWith(PARAMETER_LINESPACING))
+            {
+                var lineSpacingStr = param.substring(PARAMETER_LINESPACING.length, param.length);
+                linespacing = parseFloat(lineSpacingStr);
+            }
+        }
+	}
+    return linespacing;
+}
+
 BaseNode.prototype.namedType = function(tokenList)
 {
 	if((tokenList.length > 1) && (!tokenList[1].startWith("@")))

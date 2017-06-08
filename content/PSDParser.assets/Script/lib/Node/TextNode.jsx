@@ -35,6 +35,7 @@ TextNode.prototype.calculateBounds = function()
     else
     {
         this.height = bottom - top + Math.ceil(this.size * 0.159);
+        this.height = this.height * this.getLinespacing();
     }
 }
 
