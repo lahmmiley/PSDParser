@@ -30,6 +30,11 @@ const PARAMETER_DIRECTION = "direction";
 //Canvas
 const PARAMETER_CANVAS = "canvas";
 
+//布局控件
+const PARAMETER_SIZE_FITTER = "sizefitter"
+const PARAMETER_VERTICAL_LAYOUT = "verticallayout"
+const PARAMETER_ELEMENT = "element"
+
 const ParameterMap = new Object();
 ParameterMap[PARAMETER_ATTACH] = PARAMETER_ATTACH;
 ParameterMap[PARAMETER_MASK] = PARAMETER_MASK;
@@ -45,6 +50,10 @@ ParameterMap[PARAMETER_SCALE] = PARAMETER_SCALE;
 ParameterMap[PARAMETER_COLOR_TINT] = PARAMETER_COLOR_TINT;
 
 ParameterMap[PARAMETER_DIRECTION] = PARAMETER_DIRECTION;
+
+ParameterMap[PARAMETER_SIZE_FITTER] = PARAMETER_SIZE_FITTER;
+ParameterMap[PARAMETER_VERTICAL_LAYOUT] = PARAMETER_VERTICAL_LAYOUT;
+ParameterMap[PARAMETER_ELEMENT] = PARAMETER_ELEMENT;
 
 const AlignMap = new Object();
 AlignMap["lowercenter"] = 1;

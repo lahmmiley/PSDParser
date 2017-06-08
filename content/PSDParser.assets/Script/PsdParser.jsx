@@ -20,7 +20,6 @@ function main(exportImage)
         alert("未找到可解析的Psd文件！");
         return;
     }
-
 	var env = new Environment(app.activeDocument);
 	var root = new Extractor(env).extract();
     if(new ParameterVerify().verify(root))

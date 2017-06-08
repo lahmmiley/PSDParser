@@ -14,6 +14,7 @@ const TYPE_ENTER_EXIT_BUTTON = "enterexitbutton";
 const TYPE_CUSTOM_BUTTON = "custombutton";
 const TYPE_SCROLL_RECT = "scrollrect";
 const TYPE_DEFAULT_SCROLL_BAR = "defaultscrollbar";
+const TYPE_GRID_LAYOUT = "gridlayout";
 
 const TypeMap = new Object();
 TypeMap[TYPE_IMAGE] = 1;
@@ -32,3 +33,4 @@ TypeMap[TYPE_ENTER_EXIT_BUTTON] = 1;
 TypeMap[TYPE_CUSTOM_BUTTON] = 1;
 TypeMap[TYPE_SCROLL_RECT] = 1;
 TypeMap[TYPE_DEFAULT_SCROLL_BAR] = 1;
+TypeMap[TYPE_GRID_LAYOUT] = 1;

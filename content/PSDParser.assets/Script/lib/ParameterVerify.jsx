@@ -102,6 +102,31 @@ ParameterVerify.prototype.verifyType = function(node)
     {
         this.appendErrorMsg(node.getFullPath(), "类型错误 不存在类型type:{0}".format(typeStr));
     }
+
+    if(typeStr == TYPE_SCROLL_RECT)
+    {
+        this.verifyScrollRectType(node)
+    }
+}
+
+ParameterVerify.prototype.verifyScrollRectType = function(node)
+{
+    var children = node.children;
+    var haveContainer = false
+    for(var i = 0; i < children.length; i++)
+    {
+        var child = children[i];
+        if(child.name == "Container")
+        {
+            haveContainer = true;
+            break;
+        }
+    }
+
+    if(!haveContainer)
+    {
+        this.appendErrorMsg(node.getFullPath(), "ScrollRect类型错误 ScrollRect类型必须有名为Container的子节点");
+    }
 }
 
 ParameterVerify.prototype.verifyParamType = function(node)
