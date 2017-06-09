@@ -22,12 +22,13 @@ TextNode.prototype.calculateBounds = function()
     this.width = right - left;
     if(this.oneLine && this.orientation == "horizontal")
     {
-        //1.159为unity wqy两个字号的preferHeight之间的差值  1为误差
+		//unity中"wqy"字体
+        //1.159两个字号之间preferHeight的差值
         this.height = Math.ceil(this.size * 1.159);
         if(!NUMBER_REG.test(this.text)) //纯数字
         {
             var offset = 1;
-            if(this.size >= 16) offset +=1;
+            if(this.size >= 16) offset +=1; //1为误差
             this.y = this.y - offset;
         }
         this.oneLineAdjustBoundByEffect();
