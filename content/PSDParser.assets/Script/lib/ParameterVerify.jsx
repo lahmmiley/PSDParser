@@ -63,6 +63,7 @@ ParameterVerify.prototype.verifyNode = function(node)
 		{
 			var param = paramList[i];
 			if(param.startWith(PARAMETER_SLICE)) this.verifySlice(node, param);
+            else if(param.startWith(PARAMETER_PRESERVER)) this.verifyPreserver(node, param);
             else if(param.startWith(PARAMETER_ALIGN)) this.verifyAlign(node, param);
 			else if(param.startWith(PARAMETER_SCALE)) this.verifyScale(node, param);
 			else if(param.startWith(PARAMETER_COLOR_TINT)) this.verifyColorTint(node, param);
@@ -159,6 +160,14 @@ ParameterVerify.prototype.parameterExist = function(param)
         }
     }
     return exist;
+}
+
+ParameterVerify.prototype.verifyPreserver = function(node, param)
+{
+    if(node.type != TYPE_IMAGE)
+    {
+        this.appendErrorMsg(node.getFullPath(), "slice参数错误 只能在image类型后面添加slice参数");
+    }
 }
 
 ParameterVerify.prototype.verifySlice = function(node, param)
@@ -260,7 +269,7 @@ ParameterVerify.prototype.verifyDirection = function(node, param)
 {
     if(node.type != TYPE_SCROLL_RECT)
     {
-        this.appendErrorMsg(node.getFullPath(), "direction参数错误 只能Scroll类型后面添加direction参数");
+        this.appendErrorMsg(node.getFullPath(), "direction参数错误 只能ScrollRect类型后面添加direction参数");
     }
     var direction = param.substring(PARAMETER_DIRECTION.length, param.length);
     var exist = DirectionMap.hasOwnProperty(direction);

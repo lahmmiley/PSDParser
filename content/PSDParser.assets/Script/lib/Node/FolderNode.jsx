@@ -53,6 +53,7 @@ FolderNode.prototype.addSpecifiedProperty = function(content)
             else if(param.startWith(PARAMETER_CANVAS)) content += this.getJsonFormatProperty("Canvas", param.substring(PARAMETER_CANVAS.length, param.length), true);
             else if(param.startWith(PARAMETER_SIZE_FITTER)) content += this.getJsonFormatProperty("SizeFitter", 1, true)
             else if(param.startWith(PARAMETER_VERTICAL_LAYOUT)) content += this.getJsonFormatProperty("VerticalLayout", 1, true)
+            else if(param.startWith(PARAMETER_HORIZONTAL_LAYOUT)) content += this.getJsonFormatProperty("HorizontalLayout", 1, true)
             else if(param.startWith(PARAMETER_ELEMENT)) content += this.getJsonFormatProperty("Element", param.substring(PARAMETER_ELEMENT.length, param.length), false)
 		}
 	}

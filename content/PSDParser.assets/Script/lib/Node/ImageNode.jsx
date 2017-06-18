@@ -31,6 +31,7 @@ ImageNode.prototype.addSpecifiedProperty = function(content)
 		{
 			var param = paramList[i];
 			if(param.startWith(PARAMETER_SLICE)) content += this.getJsonFormatProperty("Slice", param.substring(PARAMETER_SLICE.length, param.length), false);
+            else if(param.startWith(PARAMETER_PRESERVER)) content += this.getJsonFormatProperty("Preserver", 1, true);
 		}
 	}
 	return content;
