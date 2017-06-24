@@ -133,7 +133,7 @@ ImageExporter.prototype.exportable = function(data)
     var name = data.name;
     if((data.belongPsd == this.env.name) &&
         (this.assetMap[name] == null) &&
-        (name != PLACEHOLDER))
+        (name.toLowerCase() != PLACEHOLDER))
     {
        return SUCCESS;
     }
