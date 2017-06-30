@@ -21,6 +21,7 @@ ImageNode.prototype.setFragments = function(descriptor, index, commonAssetMap, c
 
 ImageNode.prototype.addSpecifiedProperty = function(content)
 {
+    //BaseNode.prototype.addBaseProperty(this, arguments);
 	content += this.getJsonFormatProperty("BelongPsd", this.belongPsd, false);
 	content += this.getJsonFormatProperty("Alpha", this.alpha, false);
 	if(this.param != null)

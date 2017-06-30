@@ -1,7 +1,7 @@
-﻿function AttachParameter()
+﻿function HideParameter()
 {
     BaseParameter.apply(this, arguments);
     this.value = HAVE_PARAMETER;
 }
 
-defineSubClass(BaseParameter, AttachParameter);
+defineSubClass(BaseParameter, HideParameter);

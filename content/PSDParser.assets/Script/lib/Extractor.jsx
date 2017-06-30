@@ -3,7 +3,7 @@ const TS = typeIDToStringID;
 
 function Extractor(env) 
 {
-	this.env = env;
+    this.env = env;
 }
 
 Extractor.prototype.extract = function()
