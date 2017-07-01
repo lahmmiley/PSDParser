@@ -27,11 +27,11 @@ BaseNode.prototype.initBaseInfo = function(layerName)
 {
     if(this.descriptor == null)
     {
-        this.setBaseInfo(ROOT_NAME, TYPE_CONTAINER)
+        this.setBaseInfo(TYPE_CONTAINER, ROOT_NAME)
         return;
     }
     var layerName = this.getCleanLayerName();
-	new ParameterVerify().verifyChinese(this, layerName);
+	new VerifyManager().verifyChinese(this, layerName);
 	var tokenList = layerName.split(SPLIT_TOKEN);
     if(this.type != null) //Image 和 Text不需要设置类型
 	{
@@ -57,7 +57,7 @@ BaseNode.prototype.initParam = function()
 	var tokenList = layerName.split(SPLIT_TOKEN);
 	for(var i = 1; i < tokenList.length; i++)
 	{
-        var token = tokenList[i].removeBlank().toLowerCase();
+        var token = tokenList[i].removeBlank();
         if(token.startWith(PARAM_PREFIX))
         {
             var param = ParameterFactory.create(token.substring(1, token.length), this);
@@ -84,8 +84,7 @@ BaseNode.prototype.toJson = function(depth)
 	var prefix = (TAB).repeat(depth * 3);
 	var result = prefix + "{\n";
 	result += prefix + TAB;
-	result = this.addBaseProperty(result);
-	result = this.addSpecifiedProperty(result);
+	result = this.addProperty(result);
 	if(this.children.length == 0) result = result.substring(0, result.length - 2);//È¥µô¶ººÅ
 	result += "\n";
 	if(this.children.length > 0)
@@ -108,7 +107,7 @@ BaseNode.prototype.toJson = function(depth)
 	return result;
 }
 
-BaseNode.prototype.addBaseProperty = function(content)
+BaseNode.prototype.addProperty = function(content)
 {
 	content += this.getJsonFormatProperty("Name", this.name, false);
 	content += this.getJsonFormatProperty("Type", this.type, false);
@@ -122,24 +121,7 @@ BaseNode.prototype.addBaseProperty = function(content)
         var param = this.paramList[index];
         content += this.getJsonFormatProperty(param.getName(), param.getValue(), param.valueIsNumber());
     }
-
-	//if(this.param != null)
-	//{
-	//	var paramStr = this.param.toLowerCase()
-	//	var paramList = paramStr.split(" ");
-	//	for(var i = 0; i < paramList.length; i++)
-	//	{
-	//		var param = paramList[i];
-	//		if(param.startWith(PARAMETER_ATTACH)) content += this.getJsonFormatProperty("Attach", 1, true);
-    //        else if(param.startWith(PARAMETER_HIDE)) content += this.getJsonFormatProperty("Hide", 1, true);
-    //        else if(param.startWith(PARAMETER_MASK)) content += this.getJsonFormatProperty("Mask", 1, true);
-	//	}
-	//}
-	return content;
-}
-
-BaseNode.prototype.addSpecifiedProperty = function(content)
-{
+	
 	return content;
 }
 
@@ -167,36 +149,29 @@ BaseNode.prototype.getCleanLayerName = function()
 
 BaseNode.prototype.haveAttachParam = function()
 {
-	if(this.param == null)
-	{
-		return false;
-	}
-	var paramStr = this.param.toLowerCase()
-	if(paramStr.indexOf(PARAMETER_ATTACH) != -1)
-	{
-		return true;
-	}
-	return false;
+    for (index in this.paramList)
+    {
+        var param = this.paramList[index];
+        if(param.name == PARAMETER_ATTACH)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 BaseNode.prototype.getLinespacing = function()
 {
-    var linespacing = 1;
-	if(this.param != null)
-	{
-		var paramStr = this.param.toLowerCase()
-		var paramList = paramStr.split(" ");
-		for(var i = 0; i < paramList.length; i++)
-		{
-			var param = paramList[i];
-			if(param.startWith(PARAMETER_LINESPACING))
-            {
-                var lineSpacingStr = param.substring(PARAMETER_LINESPACING.length, param.length);
-                linespacing = parseFloat(lineSpacingStr);
-            }
+    var lineSpacing = 1;
+    for (index in this.paramList)
+    {
+        var param = this.paramList[index];
+        if(param.name == PARAMETER_LINESPACING)
+        {
+            lineSpacing = parseFloat(param.value);
         }
-	}
-    return linespacing;
+    }
+    return lineSpacing;
 }
 
 BaseNode.prototype.namedType = function(tokenList)

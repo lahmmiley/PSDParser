@@ -193,8 +193,9 @@ TextNode.prototype.parseSolidFillEffect = function(descriptor)
 	}
 }
 
-TextNode.prototype.addSpecifiedProperty = function(content)
+TextNode.prototype.addProperty = function(content)
 {
+    content = BaseNode.prototype.addProperty.apply(this, arguments);
 	content += this.getJsonFormatProperty("Size", this.size, true);
 	content += this.getJsonFormatProperty("Color", this.color, false);
 	content += this.getJsonFormatProperty("Text", this.text, false);
@@ -214,18 +215,6 @@ TextNode.prototype.addSpecifiedProperty = function(content)
 		content += this.getJsonFormatProperty("DropShadowAngle", this.dropShadowAngle, true);
 		content += this.getJsonFormatProperty("DropShadowDistance", this.dropShadowDistance, true);
 		content += this.getJsonFormatProperty("DropShadowColor", this.dropShadowColor, false);
-	}
-
-	if(this.param != null)
-	{
-		var paramStr = this.param.toLowerCase()
-		var paramList = paramStr.split(" ");
-		for(var i = 0; i < paramList.length; i++)
-		{
-			var param = paramList[i];
-			if(param.startWith(PARAMETER_LINESPACING)) content += this.getJsonFormatProperty("LineSpacing", param.substring(PARAMETER_LINESPACING.length, param.length), true);
-			if(param.startWith(PARAMETER_ALIGN)) content += this.getJsonFormatProperty("Align", param.substring(PARAMETER_ALIGN.length, param.length), false);
-		}
 	}
 	return content;
 }

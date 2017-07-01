@@ -11,15 +11,8 @@
 #include "lib/ImageExporter.jsx";
 #include "lib/PropertyGetter.jsx";
 #include "lib/Environment.jsx";
-
-#include "lib/Parameter/AttachParameter.jsx";
-#include "lib/Parameter/BaseParameter.jsx";
-#include "lib/Parameter/HideParameter.jsx";
-#include "lib/Parameter/InvalidParameter.jsx";
-#include "lib/Parameter/MaskParameter.jsx";
-#include "lib/Parameter/ParameterFactory.jsx";
-#include "lib/Parameter/ParameterManager.jsx";
-#include "lib/Parameter/ParameterVerify.jsx";
+#include "lib/ParameterFactory.jsx";
+#include "lib/VerifyManager.jsx";
 
 function main(exportImage)
 {
@@ -30,13 +23,13 @@ function main(exportImage)
     }
 	var env = new Environment(app.activeDocument);
 	var root = new Extractor(env).extract();
-    //if(new ParameterVerify().verify(root))
+    if(new VerifyManager().verify(root))
     {
         var path = env.dataFolderPath + env.name + JSON_POSTFIX;
         new FileWriter(env).write(path, root.toJson(0, true));
         if(exportImage)
         {
-            //new ImageExporter(env).export(root);
+            new ImageExporter(env).export(root);
         }
     }
 }

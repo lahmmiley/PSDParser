@@ -1,4 +1,4 @@
-function ImageNode()
+﻿function ImageNode()
 {
 	this.type = TYPE_IMAGE;
     BaseNode.apply(this, arguments);
@@ -19,21 +19,10 @@ ImageNode.prototype.setFragments = function(descriptor, index, commonAssetMap, c
 	this.alpha = descriptor.getInteger(ST("opacity"));
 }
 
-ImageNode.prototype.addSpecifiedProperty = function(content)
+ImageNode.prototype.addProperty = function(content)
 {
-    //BaseNode.prototype.addBaseProperty(this, arguments);
+    content = BaseNode.prototype.addProperty.apply(this, arguments);
 	content += this.getJsonFormatProperty("BelongPsd", this.belongPsd, false);
 	content += this.getJsonFormatProperty("Alpha", this.alpha, false);
-	if(this.param != null)
-	{
-		var paramStr = this.param.toLowerCase()
-		var paramList = paramStr.split(" ");
-		for(var i = 0; i < paramList.length; i++)
-		{
-			var param = paramList[i];
-			if(param.startWith(PARAMETER_SLICE)) content += this.getJsonFormatProperty("Slice", param.substring(PARAMETER_SLICE.length, param.length), false);
-            else if(param.startWith(PARAMETER_PRESERVER)) content += this.getJsonFormatProperty("Preserver", 1, true);
-		}
-	}
 	return content;
 }
