@@ -1,100 +1,68 @@
-const TYPE_IMAGE = "image";
-const TYPE_IMAGE_FOLDER = "imagefolder";
-const TYPE_TEXT = "text";
-const TYPE_CONTAINER = "container";
-const TYPE_BUTTON = "button";
-const TYPE_TOGGLE = "toggle";
-const TYPE_TOGGLE_GROUP = "togglegroup";
-const TYPE_SCROLL_VIEW = "scrollview";
-const TYPE_LIST = "list";
-
-const TypeMap = new Object();
-TypeMap[TYPE_IMAGE] = 1;
-TypeMap[TYPE_IMAGE_FOLDER] = 1;
-TypeMap[TYPE_TEXT] = 1;
-TypeMap[TYPE_CONTAINER] = 1;
-TypeMap[TYPE_BUTTON] = 1;
-TypeMap[TYPE_TOGGLE] = 1;
-TypeMap[TYPE_TOGGLE_GROUP] = 1;
-TypeMap[TYPE_SCROLL_VIEW] = 1;
-TypeMap[TYPE_LIST] = 1;
-
-function inherit(p)
-{
-    function f() {};
-    f.prototype = p;
-    return new f();
-}
-
-function defineSubClass(superClass, constructor)
-{
-    constructor.prototype = inherit(superClass.prototype);
-    constructor.prototype.constructor = constructor;
-}
+const DUMMY_TOKEN_LIST = [/\#/g, /å‰¯æœ¬ \d*/g, /å‰¯æœ¬\d*/g, /æ‹·è´ \d*/g, /æ‹·è´\d*/g, /copy\d*/g];
 
 function BaseNode()
 {
     this.descriptor = arguments[0];
-    this.parent = null;
+    this.parent = arguments[1];
     this.children = [];
     this.layerIndex = -1;
     this.x = 0;
     this.y = 0;
     this.width = 0;
     this.height = 0;
+    this.paramList = new Array();
 
-	//½âÎö²ÎÊı
+	//è§£æå‚æ•°
 	this.parseLayerName();
 }
 
-//²»·ÅÔÚÀàÄÚ²¿ÊÇÒòÎªÀà³õÊ¼»¯¾Í»áÓÃµ½Õâ¸öº¯Êı£¬ĞèÒª°Ñº¯Êı¶¨ÒåÔÚµ÷ÓÃÖ®Ç°
+//ä¸æ”¾åœ¨ç±»å†…éƒ¨æ˜¯å› ä¸ºç±»åˆå§‹åŒ–å°±ä¼šç”¨åˆ°è¿™ä¸ªå‡½æ•°ï¼Œéœ€è¦æŠŠå‡½æ•°å®šä¹‰åœ¨è°ƒç”¨ä¹‹å‰
 BaseNode.prototype.parseLayerName = function()
+{
+    this.initBaseInfo();
+    this.initParam();
+}
+
+BaseNode.prototype.initBaseInfo = function(layerName)
 {
     if(this.descriptor == null)
     {
-        this.name = "root";
-        this.type = TYPE_CONTAINER;
+        this.setBaseInfo(TYPE_CONTAINER, ROOT_NAME)
+        return;
     }
-    else
-    {
-		var layerName = this.descriptor.getString(ST("name"));
-		for(var i = 0;i < DUMMY_TOKEN_LIST.length;i++)
-		{
-			layerName = layerName.replace(DUMMY_TOKEN_LIST[i], "");
-		}
-		this.setParam(layerName);
-    }
-}
-
-BaseNode.prototype.setParam = function(layerName)
-{
-	var tokenList = layerName.split("_");
-	if(this.type != null)
+    var layerName = this.getCleanLayerName();
+	new VerifyManager().verifyChinese(this, layerName);
+	var tokenList = layerName.split(SPLIT_TOKEN);
+    if(this.type != null) //Image å’Œ Textä¸éœ€è¦è®¾ç½®ç±»å‹
 	{
-		this.name = tokenList[0];
+		this.setName(tokenList[0]);
 	}
 	else
 	{
-		var hasType = TypeMap.hasOwnProperty(tokenList[0].toLowerCase());
-		if(hasType)
+		if(this.namedType(tokenList))
 		{
-			this.type = tokenList[0].toLowerCase();
-			this.name = tokenList[1];
+            this.setBaseInfo(tokenList[0], tokenList[1]);
 		}
 		else
 		{
-			this.type = TYPE_CONTAINER;
-			this.name = tokenList[0];
+            this.setBaseInfo(TYPE_CONTAINER, tokenList[0])
 		}
 	}
+}
 
+BaseNode.prototype.initParam = function()
+{
+    if(this.descriptor == null) return;
+    var layerName = this.getCleanLayerName();
+	var tokenList = layerName.split(SPLIT_TOKEN);
 	for(var i = 1; i < tokenList.length; i++)
 	{
-		var token = tokenList[i];
-		if(token.startWith("@"))
-		{
-			this.param = token.substring(1, token.length);
-		}
+        var token = tokenList[i].removeBlank();
+        if(token.startWith(PARAM_PREFIX))
+        {
+            var param = ParameterFactory.create(token.substring(1, token.length), this);
+            this.paramList.push(param);
+        }
 	}
 }
 
@@ -114,33 +82,32 @@ BaseNode.prototype.calculateBounds = function()
 BaseNode.prototype.toJson = function(depth)
 {
 	var prefix = (TAB).repeat(depth * 3);
-	var jsonStr = prefix + "{\n";
-	jsonStr += prefix + TAB;
-	jsonStr = this.addBaseProperty(jsonStr);
-	jsonStr = this.addSpecifiedProperty(jsonStr);
-	if(this.children.length == 0) jsonStr = jsonStr.substring(0, jsonStr.length - 2);//È¥µô¶ººÅ
-	jsonStr += "\n";
+	var result = prefix + "{\n";
+	result += prefix + TAB;
+	result = this.addProperty(result);
+	if(this.children.length == 0) result = result.substring(0, result.length - 2);//ÃˆÂ¥ÂµÃ´Â¶ÂºÂºÃ…
+	result += "\n";
 	if(this.children.length > 0)
 	{
-		jsonStr += prefix + TAB + TAB + "\"Children\":\n";
-		jsonStr += prefix + TAB + TAB + "[\n";
+		result += prefix + TAB + TAB + "\"Children\":\n";
+		result += prefix + TAB + TAB + "[\n";
 		var length = this.children.length;
 		for(var i = 0; i < length; i++)
 		{
-			jsonStr += this.children[i].toJson(depth + 1);
+			result += this.children[i].toJson(depth + 1);
 			if(i != (length - 1))
 			{
-				jsonStr += ",";
+				result += ",";
 			}
-			jsonStr += "\n";
+			result += "\n";
 		}
-		jsonStr += prefix + TAB + TAB + "]\n";
+		result += prefix + TAB + TAB + "]\n";
 	}
-	jsonStr += prefix + "}";
-	return jsonStr;
+	result += prefix + "}";
+	return result;
 }
 
-BaseNode.prototype.addBaseProperty = function(content)
+BaseNode.prototype.addProperty = function(content)
 {
 	content += this.getJsonFormatProperty("Name", this.name, false);
 	content += this.getJsonFormatProperty("Type", this.type, false);
@@ -148,29 +115,119 @@ BaseNode.prototype.addBaseProperty = function(content)
 	content += this.getJsonFormatProperty("Y", this.y, true);
 	content += this.getJsonFormatProperty("Width", this.width, true);
 	content += this.getJsonFormatProperty("Height", this.height, true);
-	if(this.param != null)
-	{
-		content += this.getJsonFormatProperty("Param", this.param, false);
-	}
-	return content;
-}
 
-BaseNode.prototype.addSpecifiedProperty = function(content)
-{
+    for (index in this.paramList)
+    {
+        var param = this.paramList[index];
+        content += this.getJsonFormatProperty(param.getName(), param.getValue(), param.valueIsNumber());
+    }
+	
 	return content;
 }
 
 BaseNode.prototype.getJsonFormatProperty = function(propertyName, propertyValue, isNumber)
 {
-	var result = "\"" + propertyName + "\":";
 	if(isNumber)
+    {
+        return "\"{0}\":{1}, ".format(propertyName, propertyValue);
+    }
+    else
+    {
+        return "\"{0}\":\"{1}\", ".format(propertyName, propertyValue);
+    }
+}
+
+BaseNode.prototype.getCleanLayerName = function()
+{
+    var layerName = this.descriptor.getString(ST("name"));
+	for(var i = 0;i < DUMMY_TOKEN_LIST.length;i++)
 	{
-		result += propertyValue;
+		layerName = layerName.replace(DUMMY_TOKEN_LIST[i], String.empty);
 	}
-	else
+    return layerName;
+}
+
+BaseNode.prototype.haveAttachParam = function()
+{
+    for (index in this.paramList)
+    {
+        var param = this.paramList[index];
+        if(param.name == PARAMETER_ATTACH)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+BaseNode.prototype.getLinespacing = function()
+{
+    var lineSpacing = 1;
+    for (index in this.paramList)
+    {
+        var param = this.paramList[index];
+        if(param.name == PARAMETER_LINESPACING)
+        {
+            lineSpacing = parseFloat(param.value);
+        }
+    }
+    return lineSpacing;
+}
+
+BaseNode.prototype.namedType = function(tokenList)
+{
+	if((tokenList.length > 1) && (!tokenList[1].startWith("@")))
 	{
-		result += "\"" + propertyValue + "\"";
+		return true;
 	}
-	result +=  ", ";
-	return result;
+	return false
+}
+
+BaseNode.prototype.setBounds = function(x, y, width, height)
+{
+	this.x = x;
+	this.y = y;
+	this.width = width;
+	this.height = height;
+}
+
+BaseNode.prototype.setName = function(name)
+{
+	this.name = name.trim()
+}
+
+BaseNode.prototype.setType = function(type)
+{
+    this.type = type.removeBlank().toLowerCase();
+}
+
+BaseNode.prototype.setBaseInfo = function(type, name)
+{
+    this.setType(type)
+    this.setName(name)
+}
+
+
+BaseNode.prototype.getFullPath = function()
+{
+    var path = String.empty;
+    var node = this.parent;
+    while(node.name != ROOT_NAME)
+    {
+        path = node.name + "/" + path;
+        node = node.parent;
+    }
+    path = path + this.name;
+    return path;
+}
+
+BaseNode.prototype.isButton = function()
+{
+    if((this.type == TYPE_BUTTON) ||
+        (this.type == TYPE_ENTER_EXIT_BUTTON) ||
+        (this.type == TYPE_CUSTOM_BUTTON))
+    {
+        return true;
+    }
+    return false;
 }

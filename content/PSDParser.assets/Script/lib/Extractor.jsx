@@ -1,20 +1,15 @@
-//提取psd文件的信息
 const ST = stringIDToTypeID;
 const TS = typeIDToStringID;
 
-const DUMMY_TOKEN_LIST = [/\#/g, /\./g, / /g, /副本\d*/g, /拷贝\d*/g, /copy\d*/g];
-const TAB = "    "
-const NOT_EXPORT = "notexport";
-
 function Extractor(env) 
 {
-	this.env = env;
+    this.env = env;
 }
 
 Extractor.prototype.extract = function()
 {
     var layerCount = this.getLayerCount();
-    var root = new FolderNode(null);
+    var root = new FolderNode(null, null);
     var currentNode = root;
     for(var i = layerCount; i > 0; i--)
     {
@@ -50,8 +45,7 @@ Extractor.prototype.extract = function()
 
 Extractor.prototype.dealLayerSectionStart = function(descriptor, currentNode)
 {
-    var node = new FolderNode(descriptor);
-    node.parent = currentNode;
+    var node = new FolderNode(descriptor, currentNode);
     currentNode.children.push(node);
     return node;
 }
@@ -60,16 +54,15 @@ Extractor.prototype.dealLayerSectionContent = function(descriptor, currentNode, 
 {
     if(this.isTextLayer(descriptor))
     {
-        node = new TextNode(descriptor);
+        node = new TextNode(descriptor, currentNode);
 		node.parseTextStyleRangeList(descriptor);
     }
     else
     {
-        node = new ImageNode(descriptor);
-		node.setFragments(index, this.env.commonAssetMap, this.env.name);
+        node = new ImageNode(descriptor, currentNode);
+		node.setFragments(descriptor, index, this.env.commonAssetMap, this.env.name);
     }
     node.calculateBounds();
-    node.parent = currentNode;
     currentNode.children.push(node);
 }
 
@@ -79,7 +72,6 @@ Extractor.prototype.dealLayerSectionEnd = function(currentNode)
     return currentNode.parent;
 }
 
-//工具函数
 Extractor.prototype.getLayerCount = function()
 {
     var ref = new ActionReference();

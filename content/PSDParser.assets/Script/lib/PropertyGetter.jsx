@@ -6,8 +6,8 @@ function PropertyGetter(env)
 	{
 		return PropertyGetter.unique;
 	}
-	this.env = env;
 	PropertyGetter.unique = this;
+	this.env = env;
 }
 
 PropertyGetter.prototype.writeAllProperty = function(descriptor)

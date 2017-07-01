@@ -31,10 +31,10 @@
     <val>关于</val>
   </str>
   <str name="Configurator/key_###11" translate="yes">
-	<val>Script/PsdParser.jsx</val>
+	<val>Script/ExportData.jsx</val>
   </str>
   <str name="Configurator/key_###4" translate="yes">
-	<val>Script/PsdParser.jsx</val>
+	<val>Script/ExportDataAndImage.jsx</val>
   </str>
   <str name="Configurator/watermark/htmlText" translate="yes">
     <val>&lt;a href='http://labs.adobe.com/technologies/configurator/' target='_blank'&gt;使用 Configurator 创建&lt;/a&gt;</val>

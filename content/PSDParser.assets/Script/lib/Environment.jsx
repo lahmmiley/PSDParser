@@ -1,36 +1,17 @@
-const COMMON = "Common";
-
-String.empty = "";
-String.prototype.repeat = function(n)
-{
-	return new Array(n + 1).join(this);
-}
-
-String.prototype.startWith = function(str)
-{     
-  var reg=new RegExp("^" + str);     
-  return reg.test(this);        
-}
-
-String.prototype.endWith = function(str)
-{     
-  var reg=new RegExp(str + "$");     
-  return reg.test(this);        
-}
-
 function Environment(doc)
 {
 	this.doc = doc;
 	this.width = doc.width;
 	this.height = doc.height;
 	this.name = this.getPsdName(doc.name).replace(/\.(psd|png)/i, "");
-	this.resourcesFolderPath = String(doc.path).slice(0, -3);
+	var reg = /(.*)\/.*\/.*/;
+	this.resourcesFolderPath = String(doc.path).replace(reg, '$1') + "/";
 	this.imageFolderPath = this.resourcesFolderPath + "Image/";
     this.dataFolderPath = this.resourcesFolderPath + "Data/";
 	new PropertyGetter(this);
 	this.readCommonAssets();
 
-	//ÉèÖÃĞÂ½¨²Ã¼ôÃæ°åµÄµ¥Î»¡ª¡ªÏñËØ
+	//è®¾ç½®æ–°å»ºè£å‰ªé¢æ¿çš„å•ä½â€•â€•åƒç´ 
 	app.preferences.rulerUnits = Units.PIXELS;
 	app.preferences.typeUnits = TypeUnits.PIXELS;
 }
@@ -56,7 +37,7 @@ Environment.prototype.readCommonAssets = function()
         for(var i = 0;i < files.length;i++)
         {
 			var name = files[i].name;
-			name = name.replace(".png", String.empty);
+			name = name.replace(PNG_POSTFIX, String.empty);
 			this.commonAssetMap[name] = 1;
         }
 	}
