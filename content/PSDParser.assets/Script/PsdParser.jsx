@@ -8,6 +8,7 @@
 #include "lib/Tool/StringExtension.jsx";
 #include "lib/Extractor.jsx";
 #include "lib/FileWriter.jsx";
+#include "lib/BatchSettingReader.jsx";
 #include "lib/ImageExporter.jsx";
 #include "lib/PropertyGetter.jsx";
 #include "lib/Environment.jsx";
@@ -22,6 +23,7 @@ function main(exportImage)
         return;
     }
 	var env = new Environment(app.activeDocument);
+    return;
 	var root = new Extractor(env).extract();
     if(new VerifyManager().verify(root))
     {

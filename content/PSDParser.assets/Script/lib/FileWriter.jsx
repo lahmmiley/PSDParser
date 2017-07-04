@@ -4,8 +4,8 @@ function FileWriter(env)
 	{
 		return FileWriter.unique;
 	}
-	this.env = env;
 	FileWriter.unique = this;
+	this.env = env;
 }
 
 FileWriter.prototype.write = function(path, content)

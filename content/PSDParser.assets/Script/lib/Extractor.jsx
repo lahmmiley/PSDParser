@@ -1,3 +1,4 @@
+const NOT_EXPORT = "notexport";
 const ST = stringIDToTypeID;
 const TS = typeIDToStringID;
 

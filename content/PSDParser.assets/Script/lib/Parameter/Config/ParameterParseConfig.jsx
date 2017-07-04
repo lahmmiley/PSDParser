@@ -1,4 +1,6 @@
-﻿//参数解析方式
+﻿const HAVE_PARAMETER = 1;
+
+//参数解析方式
 const ParameterParseWay = new Object; 
 ParameterParseWay.noValue = 1;//只有参数名 没有值
 ParameterParseWay.haveValue = 2;//有参数名 有值

@@ -23,7 +23,7 @@ TextNode.prototype.calculateBounds = function()
     if(this.oneLine && this.orientation == "horizontal")
     {
 		//unity中"wqy"字体
-        //1.159两个字号之间preferHeight的差值
+        //1.159为字体大小之间preferHeight的差值
         this.height = Math.ceil(this.size * 1.159);
         if(!NUMBER_REG.test(this.text)) //纯数字
         {
@@ -42,7 +42,6 @@ TextNode.prototype.calculateBounds = function()
 
 TextNode.prototype.parseTextStyleRangeList = function(descriptor)
 {
-	//new PropertyGetter().writeAllProperty(descriptor);
 	this.parseOrientation(descriptor);
 	this.parseOneLine(descriptor);
 	var fragments = this.getTextFragments(descriptor);

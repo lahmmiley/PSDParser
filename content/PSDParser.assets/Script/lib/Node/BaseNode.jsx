@@ -1,3 +1,6 @@
+const PARAM_PREFIX = "@";
+const ROOT_NAME = "root";
+const LAYER_NAME_SPLIT_TOKEN = "|";
 const DUMMY_TOKEN_LIST = [/\#/g, /副本 \d*/g, /副本\d*/g, /拷贝 \d*/g, /拷贝\d*/g, /copy\d*/g];
 
 function BaseNode()
@@ -32,7 +35,7 @@ BaseNode.prototype.initBaseInfo = function(layerName)
     }
     var layerName = this.getCleanLayerName();
 	new VerifyManager().verifyChinese(this, layerName);
-	var tokenList = layerName.split(SPLIT_TOKEN);
+	var tokenList = layerName.split(LAYER_NAME_SPLIT_TOKEN);
     if(this.type != null) //Image 和 Text不需要设置类型
 	{
 		this.setName(tokenList[0]);
@@ -54,7 +57,7 @@ BaseNode.prototype.initParam = function()
 {
     if(this.descriptor == null) return;
     var layerName = this.getCleanLayerName();
-	var tokenList = layerName.split(SPLIT_TOKEN);
+	var tokenList = layerName.split(LAYER_NAME_SPLIT_TOKEN);
 	for(var i = 1; i < tokenList.length; i++)
 	{
         var token = tokenList[i].removeBlank();
