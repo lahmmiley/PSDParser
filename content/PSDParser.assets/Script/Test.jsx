@@ -1,9 +1,15 @@
-﻿function BaseNode()
+﻿var str = "\"WorldRedBagWindow\":\[\"WorldRedBagListWindow\", \"WorldRedBagSetWindow\", \"WorldRedBagInputWindow\"\]";
+
+var patt = new RegExp("\"(.*?)\"", "g");
+
+while(true)
 {
-    this.descriptor = arguments[0];
-    this.parent = arguments[1];
+    var result = patt.exec(str);
+    if(result == null) break;
+    alert(result[1]);
 }
 
-var b = new BaseNode();
-alert(b.descriptor == null);
-alert(b.parent == undefined);
+for(var i = 0; i < b.length; i++)
+{
+    //alert(b[i]);
+}
