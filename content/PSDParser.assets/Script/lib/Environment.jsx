@@ -12,7 +12,8 @@ function Environment(doc)
     this.dataFolderPath = this.resourcesFolderPath + "Data/";
 	new PropertyGetter(this);
 	this.readCommonAssets();
-	this.readBatchSetting();
+    //TODO
+	//this.readBatchSetting();
 
 	//设置新建裁剪面板的单位――像素
 	app.preferences.rulerUnits = Units.PIXELS;
@@ -32,9 +33,12 @@ Environment.prototype.getPsdName = function(rawName)
 Environment.prototype.readCommonAssets = function()
 {
 	this.commonAssetMap = {};
-    this.readAssetToMap(this.commonAssetMap, path)
-	var commonAssetPath = this.imageFolderPath + COMMON;
-    var folder = new Folder(commonAssetPath);
+    this.readAssetToMap(this.commonAssetMap, this.imageFolderPath + COMMON)
+}
+
+Environment.prototype.readAssetToMap = function(map, path)
+{
+    var folder = new Folder(path);
 	if(folder.exists)
 	{
         var files = folder.getFiles("*.png");
@@ -42,13 +46,9 @@ Environment.prototype.readCommonAssets = function()
         {
 			var name = files[i].name;
 			name = name.replace(PNG_POSTFIX, String.empty);
-			this.commonAssetMap[name] = 1;
+			map[name] = 1;
         }
 	}
-}
-
-Environment.prototype.readAssetToMap = function()
-{
 }
 
 Environment.prototype.readBatchSetting = function()
@@ -60,15 +60,5 @@ Environment.prototype.readBatchSetting = function()
 Environment.prototype.readBatchAssets = function(path)
 {
     this.batchAssetMap = {};
-    var folder = new Folder(path);
-	if(folder.exists)
-	{
-        var files = folder.getFiles("*.png");
-        for(var i = 0;i < files.length;i++)
-        {
-			var name = files[i].name;
-			name = name.replace(PNG_POSTFIX, String.empty);
-			this.batchAssetMap[name] = 1;
-        }
-	}
+    this.readAssetToMap(this.batchAssetMap, path)
 }

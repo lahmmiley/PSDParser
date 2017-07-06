@@ -32,11 +32,11 @@ const PARAMETER_PRESERVER = "Preserve"
 
 //文本参数
 const PARAMETER_ALIGN = "Align"
-const PARAMETER_LINESPACING = "Linespacing"
+const PARAMETER_LINESPACING = "LineSpacing"
 
 //按钮参数
 const PARAMETER_SCALE = "Scale"
-const PARAMETER_COLOR_TINT = "Colortint"
+const PARAMETER_COLOR_TINT = "ColorTint"
 
 //ScrollRect参数
 const PARAMETER_DIRECTION = "Direction"

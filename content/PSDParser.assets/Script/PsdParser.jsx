@@ -23,7 +23,7 @@ function main(exportImage)
         return;
     }
 	var env = new Environment(app.activeDocument);
-    return;
+    //return;
 	var root = new Extractor(env).extract();
     if(new VerifyManager().verify(root))
     {
