@@ -6,10 +6,6 @@ while(true)
 {
     var result = patt.exec(str);
     if(result == null) break;
-    alert(result[1]);
-}
-
-for(var i = 0; i < b.length; i++)
-{
-    //alert(b[i]);
+    alert(result.length)
+    alert(result[0]);
 }

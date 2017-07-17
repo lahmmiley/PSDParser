@@ -10,6 +10,8 @@ function BatchSettingReader(env)
 	}
 	BatchSettingReader.unique = this;
 	this.env = env;
+
+	this.outputDict = new Object();
 }
 
 BatchSettingReader.prototype.read = function()
@@ -33,11 +35,24 @@ BatchSettingReader.prototype.read = function()
 
 BatchSettingReader.prototype.parseLine = function(line)
 {
-    var index = 0;
+    var outputPath = null
+	
     while(true)
     {
         var result = BATCH_NAME_REG.exec(line);
         if(result == null) break;
-        alert(result[1]);
+		var path = result[1];
+		if(outputPath == null)
+		{
+			outputPath = path;
+		}
+		else
+		{
+			if(this.nameToOutput.hasOwnProperty(path))
+			{
+				throw("读取BatchSetting发现重复路径:" + path);
+			}
+			this.nameToOutput[path] = outputPath
+		}
     }
 }
