@@ -1,11 +1,10 @@
-function FileWriter(env)
+function FileWriter()
 {
 	if(FileWriter.unique != undefined)
 	{
 		return FileWriter.unique;
 	}
 	FileWriter.unique = this;
-	this.env = env;
 }
 
 FileWriter.prototype.write = function(path, content)

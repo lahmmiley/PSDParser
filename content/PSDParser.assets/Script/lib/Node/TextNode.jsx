@@ -61,8 +61,8 @@ TextNode.prototype.parseOneLine = function(descriptor)
 {
 	var textStyle = descriptor.getObjectValue(ST("textKey"));
     var content = textStyle.getString(ST("textKey"));
-	//if((content.indexOf("\n") == -1) &&
-	if (content.indexOf("\r") == -1)
+	if((content.indexOf("\n") == -1) &&
+	    (content.indexOf("\r") == -1))
 	{
 		this.oneLine = true;
 	}

@@ -26,6 +26,7 @@ BatchSettingReader.prototype.read = function()
             this.parseLine();
         }while(line != String.empty)
         file.close();
+        this.printDict()
     }
     else
     {
@@ -54,5 +55,13 @@ BatchSettingReader.prototype.parseLine = function(line)
 			}
 			this.nameToOutput[path] = outputPath
 		}
+    }
+}
+
+BatchSettingReader.prototype.printDict = function(line)
+{
+    for(var key in this.nameToOutput)
+    {
+        alert("key:" + key + "  output:" + this.nameToOutput[key])
     }
 }

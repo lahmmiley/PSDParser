@@ -119,7 +119,7 @@ BaseNode.prototype.addProperty = function(content)
 	content += this.getJsonFormatProperty("Width", this.width, true);
 	content += this.getJsonFormatProperty("Height", this.height, true);
 
-    for (index in this.paramList)
+    for(index in this.paramList)
     {
         var param = this.paramList[index];
         content += this.getJsonFormatProperty(param.getName(), param.getValue(), param.valueIsNumber());
@@ -150,23 +150,28 @@ BaseNode.prototype.getCleanLayerName = function()
     return layerName;
 }
 
-BaseNode.prototype.haveAttachParam = function()
+BaseNode.prototype.getParamByType = function(paramType)
 {
-    for (index in this.paramList)
+    for(index in this.paramList)
     {
         var param = this.paramList[index];
-        if(param.name == PARAMETER_ATTACH)
+        if(param.name == paramType)
         {
-            return true;
+            return param;
         }
     }
-    return false;
+    return null;
+}
+
+BaseNode.prototype.haveAttachParam = function()
+{
+    return this.getParamByType(PARAMETER_ATTACH) != null;
 }
 
 BaseNode.prototype.getLinespacing = function()
 {
     var lineSpacing = 1;
-    for (index in this.paramList)
+    for(index in this.paramList)
     {
         var param = this.paramList[index];
         if(param.name == PARAMETER_LINESPACING)

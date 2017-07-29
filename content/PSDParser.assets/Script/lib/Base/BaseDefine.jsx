@@ -1,6 +1,7 @@
 const COMMON = "Base";
 const TAB = "    "
 
+const IMAGE_DATA = "ImageData";
 const JSON_POSTFIX = ".json";
 const PNG_POSTFIX = ".png";
 

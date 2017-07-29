@@ -36,6 +36,7 @@ ImageExporter.prototype.export = function(root)
     app.activeDocument = this.workbench;
     this.close();
     app.activeDocument = this.currentActiveDocument;
+    this.writeImageData()
 }
 
 ImageExporter.prototype.createWorkbench = function()
@@ -43,10 +44,10 @@ ImageExporter.prototype.createWorkbench = function()
     this.workbench = app.documents.add(this.env.width, this.env.height, 72, WORKBENCH, NewDocumentMode.RGB, DocumentFill.TRANSPARENT);
 }
 
-ImageExporter.prototype.exportAllLayers = function(data)
+ImageExporter.prototype.exportAllLayers = function(node)
 {
     app.activeDocument = this.currentActiveDocument;
-    var children = data.children;
+    var children = node.children;
     for(var i = 0; i < children.length; i++)
     {
         var child = children[i];
@@ -61,21 +62,21 @@ ImageExporter.prototype.exportAllLayers = function(data)
     }
 }
 
-ImageExporter.prototype.exportImageLayer = function(data)
+ImageExporter.prototype.exportImageLayer = function(node)
 {
-    if(this.exportable(data))
+    if(this.exportable(node))
     {
-        var name = data.name;
-        this.assetMap[name] = 1;
+        var name = node.name;
+        this.assetMap[name] = node;
         var imagePath = this.imageExportPath + name + PNG_POSTFIX;
-        this.exportImageInWorkbench(data, imagePath);
+        this.exportImageInWorkbench(node, imagePath);
     }
 }
 
-ImageExporter.prototype.exportImageInWorkbench = function(data, imagePath)
+ImageExporter.prototype.exportImageInWorkbench = function(node, imagePath)
 {
-    this.selectLayer(data);
-    this.duplicateLayerToWorkbench(data);
+    this.selectLayer(node);
+    this.duplicateLayerToWorkbench(node);
     app.activeDocument = this.workbench;
     this.workbench.trim(TrimType.TRANSPARENT);
 	this.workbench.exportDocument(new File(imagePath), ExportType.SAVEFORWEB, this.exportOptions);
@@ -84,16 +85,16 @@ ImageExporter.prototype.exportImageInWorkbench = function(data, imagePath)
     app.activeDocument = this.currentActiveDocument;
 }
 
-ImageExporter.prototype.selectLayer = function(data)
+ImageExporter.prototype.selectLayer = function(node)
 {
     var desc = new ActionDescriptor();
     var ref = new ActionReference();
-    ref.putIndex(ST("layer"), data.layerIndex);
+    ref.putIndex(ST("layer"), node.layerIndex);
     desc.putReference(ST("null"), ref);
     executeAction(ST("select"), desc, DialogModes.NO);
 }
 
-ImageExporter.prototype.duplicateLayerToWorkbench = function(data)
+ImageExporter.prototype.duplicateLayerToWorkbench = function(node)
 {
     var desc = new ActionDescriptor();
     var layerRef = new ActionReference();
@@ -103,7 +104,7 @@ ImageExporter.prototype.duplicateLayerToWorkbench = function(data)
     var docRef = new ActionReference();
     docRef.putName(ST("document"), WORKBENCH);
     desc.putReference(ST("to"), docRef);
-    docRef.putIndex(ST("layer"), data.layerIndex);
+    docRef.putIndex(ST("layer"), node.layerIndex);
     desc.putInteger(ST("version"), 5);
     executeAction(ST("duplicate"), desc, DialogModes.NO);
 }
@@ -128,10 +129,41 @@ ImageExporter.prototype.close = function()
     executeAction( idCls, desc30, DialogModes.NO );
 }
 
-ImageExporter.prototype.exportable = function(data)
+ImageExporter.prototype.writeImageData = function()
 {
-    var name = data.name;
-    if((data.belongPsd == this.env.name) &&
+    var env = this.env;
+    var imageDataPath = env.dataFolderPath + env.name + IMAGE_DATA + JSON_POSTFIX;
+    var content = this.getImageData();
+    new FileWriter(env).write(imageDataPath, content);
+}
+
+ImageExporter.prototype.getImageData = function()
+{
+    var content = "[\n";
+    var first = true;
+    for(key in this.assetMap)
+    {
+        var node = this.assetMap[key];
+        content += TAB + "{\"Name\":" + "\"" + key + "\",";
+        var param = node.getParamByType(PARAMETER_MIRROR)
+        if(param != null)
+        {
+            content += " \"Mirror\":\"" + param.value + "\",";
+        }
+
+        content = content.substring(0, content.length - 1);
+        content += "},\n";
+    }
+    content = content.substring(0, content.length - 2);
+    content += "\n]";
+    return content;
+}
+
+
+ImageExporter.prototype.exportable = function(node)
+{
+    var name = node.name;
+    if((node.belongPsd == this.env.name) &&
         (this.assetMap[name] == null) &&
         (name.toLowerCase() != PLACEHOLDER))
     {
