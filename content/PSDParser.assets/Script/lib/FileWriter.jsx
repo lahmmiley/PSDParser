@@ -18,6 +18,6 @@ FileWriter.prototype.write = function(path, content)
     }
     else
     {
-        throw("json文件写入失败，可以尝试\n1、把unity工具中对相应json文件的引用删去\n2、把psd文件关闭再打开");
+        throw(path + "写入失败，可以尝试\n1、把unity工具中对相应json文件的引用删去\n2、把psd文件关闭再打开");
     }
 }

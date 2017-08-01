@@ -10,6 +10,7 @@ function Environment(doc)
 	this.resourcesFolderPath = String(doc.path).replace(reg, '$1') + "/";
 	this.imageFolderPath = this.resourcesFolderPath + "Image/";
     this.dataFolderPath = this.resourcesFolderPath + "Data/";
+    this.imageDataFolderPath = this.resourcesFolderPath + "ImageData/";
 	new PropertyGetter(this);
 	this.readCommonAssets();
     //TODO

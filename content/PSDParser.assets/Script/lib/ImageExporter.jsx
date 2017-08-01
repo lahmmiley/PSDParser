@@ -132,7 +132,7 @@ ImageExporter.prototype.close = function()
 ImageExporter.prototype.writeImageData = function()
 {
     var env = this.env;
-    var imageDataPath = env.dataFolderPath + env.name + IMAGE_DATA + JSON_POSTFIX;
+    var imageDataPath = env.imageDataFolderPath + env.name + JSON_POSTFIX;
     var content = this.getImageData();
     new FileWriter(env).write(imageDataPath, content);
 }
