@@ -23,12 +23,11 @@ function main(exportImage)
         return;
     }
 	var env = new Environment(app.activeDocument);
-    //return;
 	var root = new Extractor(env).extract();
     if(new VerifyManager().verify(root))
     {
-        var path = env.dataFolderPath + env.name + JSON_POSTFIX;
-        new FileWriter(env).write(path, root.toJson(0, true));
+        var dataPath = env.dataFolderPath + env.name + JSON_POSTFIX;
+        new FileWriter().write(dataPath, root.toJson(0, true));
         if(exportImage)
         {
             new ImageExporter(env).export(root);

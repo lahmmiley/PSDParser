@@ -12,6 +12,7 @@
 #include "Parameter/InvalidParameter.jsx";
 #include "Parameter/LineSpacingParameter.jsx";
 #include "Parameter/MaskParameter.jsx";
+#include "Parameter/MirrorParameter.jsx";
 #include "Parameter/PreserverParameter.jsx";
 #include "Parameter/ScaleParameter.jsx";
 #include "Parameter/SizeFitterParameter.jsx";
@@ -29,6 +30,7 @@ const PARAMETER_MASK = "Mask"
 //图片参数
 const PARAMETER_SLICE = "Slice"
 const PARAMETER_PRESERVER = "Preserve"
+const PARAMETER_MIRROR = "Mirror"
 
 //文本参数
 const PARAMETER_ALIGN = "Align"
@@ -59,6 +61,7 @@ ParameterMap[PARAMETER_CANVAS] = new ParameterConfig(CanvasParameter, new Parame
 
 ParameterMap[PARAMETER_SLICE] = new ParameterConfig(SliceParameter, new ParameterParseConfig(ParameterParseWay.haveValue, false), [TYPE_IMAGE]);
 ParameterMap[PARAMETER_PRESERVER] = new ParameterConfig(PreserverParameter, new ParameterParseConfig(ParameterParseWay.noValue), [TYPE_IMAGE]);
+ParameterMap[PARAMETER_MIRROR] = new ParameterConfig(MirrorParameter, new ParameterParseConfig(ParameterParseWay.haveValue, false), [TYPE_IMAGE]);
 
 ParameterMap[PARAMETER_ALIGN] = new ParameterConfig(AlignParameter, new ParameterParseConfig(ParameterParseWay.haveValue, false), [TYPE_TEXT]);
 ParameterMap[PARAMETER_LINESPACING] = new ParameterConfig(LineSpacingParameter, new ParameterParseConfig(ParameterParseWay.haveDefaultValue, true, 1), [TYPE_TEXT]);
