@@ -10,33 +10,32 @@ function BatchSettingReader(env)
 	}
 	BatchSettingReader.unique = this;
 	this.env = env;
-
-	this.outputDict = new Object();
 }
 
 BatchSettingReader.prototype.read = function()
 {
     var path = this.env.resourcesFolderPath + BATCH_SETTING_NAME;
     var file = new File(path);
+	var outputDict = new Object();
     if(file.open("r") == true)
     {
         do
         {
             var line = file.readln();
-            this.parseLine();
+            this.parseLine(outputDict, line);
         }while(line != String.empty)
         file.close();
     }
     else
     {
-        throw("打开" + BATCH_SETTING_NAME + "批处理文件失败");
+        throw("打开" + BATCH_SETTING_NAME + "合并处理文件失败");
     }
+	return outputDict
 }
 
-BatchSettingReader.prototype.parseLine = function(line)
+BatchSettingReader.prototype.parseLine = function(outputDict, line)
 {
     var outputPath = null
-	
     while(true)
     {
         var result = BATCH_NAME_REG.exec(line);
@@ -48,11 +47,12 @@ BatchSettingReader.prototype.parseLine = function(line)
 		}
 		else
 		{
-			if(this.nameToOutput.hasOwnProperty(path))
+			if(outputDict.hasOwnProperty(path))
 			{
 				throw("读取BatchSetting发现重复路径:" + path);
 			}
-			this.nameToOutput[path] = outputPath
+			alert("path:" + path + "	outputPath:" + outputPath);
+			outputDict[path] = outputPath;
 		}
     }
 }

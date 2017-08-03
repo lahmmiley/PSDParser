@@ -61,7 +61,7 @@ Extractor.prototype.dealLayerSectionContent = function(descriptor, currentNode, 
     else
     {
         node = new ImageNode(descriptor, currentNode);
-		node.setFragments(descriptor, index, this.env.commonAssetMap, this.env.name);
+		node.setFragments(descriptor, index, this.env);
     }
     node.calculateBounds();
     currentNode.children.push(node);

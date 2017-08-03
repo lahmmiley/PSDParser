@@ -3,15 +3,25 @@ const PLACEHOLDER = "placeholder"
 
 function ImageExporter(env)
 {
-	this.env = env;
-	this.imageExportPath = this.env.imageFolderPath + this.env.name + "/";
+    this.env = env;
+    if(!this.env.isBatch())
+    {
+       this.imageExportPath = this.env.imageFolderPath + this.env.name + "/";
+    }
+    else
+    {
+       this.imageExportPath = this.env.imageFolderPath + this.env.batchName + "/";
+    }
     var folder = new Folder(this.imageExportPath);
     if(folder.exists)
     {
-        var files = folder.getFiles();
-        for(var i = 0;i < files.length;i++)
+        if(!this.env.isBatch())
         {
-           files[i].remove();
+            var files = folder.getFiles();
+            for(var i = 0;i < files.length;i++)
+            {
+               files[i].remove();
+            }
         }
     }
 	else

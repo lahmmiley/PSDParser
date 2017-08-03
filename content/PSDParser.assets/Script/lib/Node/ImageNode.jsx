@@ -5,16 +5,20 @@
 }
 defineSubClass(BaseNode, ImageNode);
 
-ImageNode.prototype.setFragments = function(descriptor, index, commonAssetMap, currentPsdName)
+ImageNode.prototype.setFragments = function(descriptor, index, env, commonAssetMap, currentPsdName)
 {
 	node.layerIndex = index;
-	if(commonAssetMap[this.name] != null)
+	if(env.commonAssetMap[this.name] != null)
 	{
 		this.belongPsd = COMMON;
 	}
+	else if(env.batchAssetMap[this.name] != null)
+	{
+		this.belongPsd = env.batchName;
+	}
 	else
 	{
-		this.belongPsd = currentPsdName;
+		this.belongPsd = env.name;
 	}
 	this.alpha = descriptor.getInteger(ST("opacity"));
 }
