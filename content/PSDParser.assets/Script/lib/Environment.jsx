@@ -6,11 +6,14 @@ function Environment(doc)
 	this.width = doc.width;
 	this.height = doc.height;
 	this.name = this.getPsdName(doc.name).replace(/\.(psd|png)/i, "");
-	var reg = /(.*)\/.*\/.*/;
+	var reg = /(.*)\/.*/;
 	this.resourcesFolderPath = String(doc.path).replace(reg, '$1') + "/";
 	this.imageFolderPath = this.resourcesFolderPath + "Image/";
     this.dataFolderPath = this.resourcesFolderPath + "Data/";
     this.imageDataFolderPath = this.resourcesFolderPath + "ImageData/";
+    this.createFolder(this.imageFolderPath)
+    this.createFolder(this.dataFolderPath)
+    this.createFolder(this.imageDataFolderPath)
 	new PropertyGetter(this);
     
 	this.commonAssetMap = this.readAssets(this.imageFolderPath + COMMON);
@@ -66,4 +69,13 @@ Environment.prototype.readAssets = function(path)
         }
 	}
 	return map;
+}
+
+Environment.prototype.createFolder = function(path)
+{
+    var folder = new Folder(path);
+    if(!folder.exists)
+    {
+        folder.create();
+    }
 }

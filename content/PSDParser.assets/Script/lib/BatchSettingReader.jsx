@@ -17,6 +17,10 @@ BatchSettingReader.prototype.read = function()
     var path = this.env.resourcesFolderPath + BATCH_SETTING_NAME;
     var file = new File(path);
 	var outputDict = new Object();
+    if(!file.exists)
+    {
+        return outputDict;
+    }
     if(file.open("r") == true)
     {
         do
@@ -31,7 +35,7 @@ BatchSettingReader.prototype.read = function()
     {
         throw("打开" + BATCH_SETTING_NAME + "合并处理文件失败");
     }
-	return outputDict
+	return outputDict;
 }
 
 BatchSettingReader.prototype.parseLine = function(outputDict, line)
